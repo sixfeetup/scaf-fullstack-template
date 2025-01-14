@@ -1,0 +1,29 @@
+argon2-cffi
+crispy-bootstrap5
+daphne
+django
+django-allauth
+django-crispy-forms
+django-environ
+django-model-utils
+django-redis
+Pillow
+urllib3
+{% if copier__use_sentry %}
+sentry-sdk[django]
+{% endif %}
+
+{%- if copier__use_celery %}
+celery
+django-celery-beat
+flower
+redis
+{%- endif %}
+
+{%- if copier__create_nextjs_frontend %}
+strawberry-graphql-django
+{%- endif %}
+
+{%- if copier__create_nextjs_frontend %}
+django-cors-headers
+{%- endif %}

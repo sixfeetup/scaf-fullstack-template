@@ -1,0 +1,182 @@
+# Copier configuration/questions for "SFU fullstack project template"
+_templates_suffix: ""
+
+_tasks:
+  - command: python ../tasks.py
+    working_directory: "{{ copier__project_slug }}"
+
+copier__project_name:
+  type: str
+  default: "My Awesome Scaf Project"
+  help: "The name of your project."
+  validator: >-
+    {% if not copier__project_name.strip() %}
+      "Project name cannot be empty."
+    {% endif %}
+
+copier__project_slug:
+  type: str
+  default: "{{ is_project_slug if is_project_slug else copier__project_name.lower().replace(' ', '_').replace('-', '_').replace('.', '_').strip() }}"
+  help: "The project slug derived from the project name."
+  validator: >-
+    {% if not copier__project_slug.isidentifier() %}
+      "'{{ copier__project_slug }}' is not a valid Python identifier."
+    {% elif copier__project_slug != copier__project_slug.lower() %}
+      "'{{ copier__project_slug }}' must be all lowercase."
+    {% elif not copier__project_slug.strip() %}
+      "Project slug cannot be empty."
+    {% endif %}
+
+copier__project_dash:
+  type: str
+  default: "{{ copier__project_name.lower().replace(' ', '-').replace('_', '-').replace('.', '-').strip() }}"
+  help: "The project name in dash-separated format."
+  validator: >-
+    {% if not copier__project_dash.strip() %}
+      "Project dash cannot be empty."
+    {% endif %}
+
+copier__description:
+  type: str
+  default: "Behold My Awesome Project!"
+  help: "A brief description of your project."
+  validator: >-
+    {% if not copier__description.strip() %}
+      "Description cannot be empty."
+    {% endif %}
+
+copier__author_name:
+  type: str
+  default: "Joe Scaf"
+  help: "The name of the author."
+  validator: >-
+    {% if "\\" in copier__author_name %}
+      "Backslashes ('\\') are not allowed in the author name."
+    {% elif not copier__author_name.strip() %}
+      "Author name cannot be empty."
+    {% elif not copier__author_name.replace(" ", "").isalpha() %}
+     "'{{ copier__author_name }}' should contain only alphabetic characters and spaces."
+    {% endif %}
+
+copier__domain_name:
+  type: str
+  default: "sixfeetup.com"
+  help: "The domain name associated with the project."
+  validator: >-
+    {% if not copier__domain_name.strip() %}
+      "Domain name cannot be empty."
+    {% endif %}
+
+copier__email:
+  type: str
+  default: "{{ copier__author_name.lower().replace(' ', '-') }}@{{ copier__domain_name }}"
+  help: "The author's email address."
+  validator: >-
+    {% if not copier__email.strip() %}
+      "Email cannot be empty."
+    {% elif "@" not in copier__email %}
+      "'{{ copier__email }}' is not a valid email address."
+    {% endif %}
+
+copier__version:
+  type: str
+  default: "0.1.0"
+  help: "The initial version of the project."
+  validator: >-
+    {% if not copier__version.strip() %}
+      "Version cannot be empty."
+    {% endif %}
+
+copier__timezone:
+  type: str
+  default: "US/Eastern"
+  help: "The default timezone for the project."
+  validator: >-
+    {% if not copier__timezone.strip() %}
+      "Timezone cannot be empty."
+    {% endif %}
+
+copier__aws_region:
+  type: str
+  default: "us-east-1"
+  help: "AWS region for deployment."
+  validator: >-
+    {% if not copier__aws_region.strip() %}
+      "AWS region cannot be empty."
+    {% endif %}
+
+copier__aws_account_id:
+  type: str
+  default: "000000000000"
+  help: "AWS account ID for deployment."
+  validator: >-
+    {% if not copier__aws_account_id.strip() %}
+      "AWS account ID cannot be empty."
+    {% endif %}
+
+copier__create_nextjs_frontend:
+  type: bool
+  default: true
+  help: "Do you want to create a Next.js frontend? (y/n) [default: Yes]"
+
+copier__debug:
+  type: bool
+  default: false
+  help: "Do you want to enable debug mode? (y/n) [default: No]"
+
+copier__mail_service:
+  type: str
+  default: "Mailgun"
+  choices:
+    - "Mailgun"
+    - "Amazon SES"
+    - "Other SMTP"
+  help: "Which mail service do you want to use?"
+
+copier__operating_system:
+  type: str
+  default: "k3s"
+  choices:
+    k3s: "k3s"
+    talos: "talos"
+  help: "Which operating system to use?"
+
+copier__challenge:
+  type: bool
+  default: "{{ is_challenge_mode }}"
+  help: "Do you want to enable the challenge feature? (y/n) [default: No]"
+  when: false
+
+copier__use_celery:
+  type: bool
+  default: false
+  help: "Do you want to use Celery for task management? (y/n) [default: No]"
+
+copier__use_sentry:
+  type: bool
+  default: false
+  help: "Do you want to integrate Sentry for error tracking? (y/n) [default: No]"
+
+copier__source_control_provider:
+  type: str
+  default: "github.com"
+  choices:
+    github: "github.com"
+    bitbucket: "bitbucket.org"
+    No source control provider: "none"
+  help: "Which source control provider do you want to use? [default: github]"
+
+copier__source_control_organization_slug:
+  type: str
+  default: "sixfeetup"
+  help: "What is the organization slug for the source control provider?"
+
+copier__repo_name:
+  type: str
+  default: "{{ copier__project_slug }}"
+  help: "The name of the repository."
+
+copier__repo_url:
+  type: str
+  default: "git@{{ copier__source_control_provider }}:{{ copier__source_control_organization_slug }}/{{ copier__project_slug }}.git"
+  help: "The URL of the repository."
