@@ -4,6 +4,7 @@ _templates_suffix: ""
 _tasks:
   - command: python ../tasks.py
     working_directory: "{{ copier__project_slug }}"
+  - command: rm tasks.py
 
 copier__project_name:
   type: str
