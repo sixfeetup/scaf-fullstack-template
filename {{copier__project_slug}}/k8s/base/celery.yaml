@@ -34,7 +34,7 @@ spec:
           command: celery
           args:
             - -A
-            - "{{ copier__project_slug }}"
+            - '{{ copier__project_slug }}'
             - worker
             - -E
             - -l
@@ -49,8 +49,8 @@ spec:
           command: celery
           args:
             - -A
-						- "{{ copier__project_slug }}"
-						- beat
+            - '{{ copier__project_slug }}'
+            - beat
           envFrom:
             - configMapRef:
                 name: app-config
@@ -64,8 +64,8 @@ spec:
           command: celery
           args:
             - -A
-						- "{{ copier__project_slug }}"
-						- flower
+            - '{{ copier__project_slug }}'
+            - flower
           envFrom:
             - configMapRef:
                 name: app-config
