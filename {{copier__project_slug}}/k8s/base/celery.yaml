@@ -1,3 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: flower
+  labels:
+    app: celery
+spec:
+  type: ClusterIP
+  selector:
+    app: celery
+  ports:
+    - port: 5555
+      targetPort: flower-server
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -17,7 +31,14 @@ spec:
       containers:
         - name: celeryworker
           image: backend:latest
-          command: ["celery", "-A", "{{ copier__project_slug }}", "worker", "-E", "-l", "info"]
+          command: celery
+          args:
+            - -A
+            - "{{ copier__project_slug }}"
+            - worker
+            - -E
+            - -l
+            - info
           envFrom:
             - configMapRef:
                 name: app-config
@@ -25,15 +46,26 @@ spec:
                 name: secrets-config
         - name: celerybeat
           image: backend:latest
-          command: ["celery", "-A", "{{ copier__project_slug }}", "beat"]
+          command: celery
+          args:
+            - -A
+						- "{{ copier__project_slug }}"
+						- beat
           envFrom:
             - configMapRef:
                 name: app-config
             - secretRef:
                 name: secrets-config
         - name: flower
+          ports:
+            - name: flower-server
+              containerPort: 5555
           image: backend:latest
-          command: ["celery", "-A", "{{ copier__project_slug }}", "flower"]
+          command: celery
+          args:
+            - -A
+						- "{{ copier__project_slug }}"
+						- flower
           envFrom:
             - configMapRef:
                 name: app-config
