@@ -31,7 +31,8 @@ spec:
       containers:
         - name: celeryworker
           image: backend:latest
-          command: celery
+          command: 
+            - celery
           args:
             - -A
             - {{ copier__project_slug }}
@@ -46,7 +47,8 @@ spec:
                 name: secrets-config
         - name: celerybeat
           image: backend:latest
-          command: celery
+          command: 
+            - celery
           args:
             - -A
             - {{ copier__project_slug }}
@@ -61,7 +63,8 @@ spec:
             - name: flower-server
               containerPort: 5555
           image: backend:latest
-          command: celery
+          command: 
+            - celery
           args:
             - -A
             - {{ copier__project_slug }}
