@@ -58,5 +58,5 @@ k8s_resource(workload='backend', port_forwards=8000)
 k8s_resource(workload='mailhog', port_forwards=8025)
 k8s_resource(workload='postgres', port_forwards=5432)
 {% if copier__use_celery %}
-k8s_resource(workload='flower', port_forwards=5555)
+k8s_resource(workload='celery', port_forwards=5555)
 {% endif %}
