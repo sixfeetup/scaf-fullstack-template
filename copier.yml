@@ -5,6 +5,17 @@ _tasks:
   - cd {{ copier__project_slug }} && python ../tasks.py
   - rm tasks.py
 
+_exclude:
+  - "copier.yaml"
+  - "copier.yml"
+  - "~*"
+  - "*.py[co]"
+  - "__pycache__"
+  - ".git"
+  - ".DS_Store"
+  - ".svn"
+  - "*.test-data.yml"
+
 copier__project_name:
   type: str
   default: "My Awesome Scaf Project"
