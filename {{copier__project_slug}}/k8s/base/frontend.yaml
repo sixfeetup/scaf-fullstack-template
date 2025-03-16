@@ -34,6 +34,13 @@ spec:
           ports:
             - name: http-server
               containerPort: 3000
+          resources:
+            limits:
+              cpu: "250m"
+              memory: "300Mi"
+            requests:
+              cpu: "100m"
+              memory: "200Mi"
           env:
             - name: PORT
               value: "3000"

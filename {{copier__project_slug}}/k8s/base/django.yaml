@@ -40,6 +40,13 @@ spec:
                 name: app-config
             - secretRef:
                 name: secrets-config
+          resources:
+            limits:
+              cpu: "250m"
+              memory: "400Mi"
+            requests:
+              cpu: "200m"
+              memory: "300Mi"
           livenessProbe:
             httpGet:
               path: /healthz
