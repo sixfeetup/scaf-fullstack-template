@@ -26,15 +26,6 @@ jobs:
           node-version: '20'
       - name: Frontend Lint & Typecheck & Test
         run: make check-lint-and-test-frontend
-  test-frontend:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v3
-        with:
-          node-version: '20'
-      - name: Frontend Unit Tests
-        run: CI=true make frontend-test
 {% endif %}
   backend-test:
     runs-on: ubuntu-latest
@@ -81,7 +72,11 @@ jobs:
   build-and-push-images:
     if: github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
+{% if copier__create_nextjs_frontend %}
+    needs: [check-lint-and-formatting, backend-test, check-lint-and-test-frontend]
+{% else %}
     needs: [check-lint-and-formatting, backend-test]
+{% endif %}
 
     permissions:
       id-token: write
