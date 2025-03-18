@@ -69,3 +69,18 @@ To update the backend app dependencies, you must edit the `backend/requirements/
 Once you have made your changes, you need to regenerate the `backend/requirements/*.txt` files using:
 
        $ make compile
+
+
+## Resource Limits Consideration
+
+Resource limits have been predefined for both Django and NextJS services to ensure optimal performance and efficient resource utilization:
+
+- **Django**:
+  - Requests: `cpu: 200m`, `memory: 300Mi`
+  - Limits: `cpu: 250m`, `memory: 400Mi`
+
+- **NextJS**:
+  - Requests: `cpu: 100m`, `memory: 200Mi`
+  - Limits: `cpu: 250m`, `memory: 300Mi`
+
+Ensure these values are appropriate for your environment. If needed, adjust them based on real workload observations in a staging or production environment to balance performance and resource consumption.
