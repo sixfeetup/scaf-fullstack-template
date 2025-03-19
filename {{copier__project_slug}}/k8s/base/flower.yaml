@@ -14,6 +14,7 @@ spec:
       labels:
         app: {{ copier__project_slug }}
     spec:
+      priorityClassName: app-medium-priority
       containers:
         - name: flower
           image: {{ copier__project_slug }}_local_django:latest

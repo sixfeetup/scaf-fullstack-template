@@ -28,6 +28,7 @@ spec:
       labels:
         app: postgres
     spec:
+      priorityClassName: postgres-high-priority
       containers:
         - name: postgres
           image: postgres:17
@@ -76,3 +77,13 @@ spec:
   resources:
     requests:
       storage: 500Mi
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: postgres-pdb
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: postgres

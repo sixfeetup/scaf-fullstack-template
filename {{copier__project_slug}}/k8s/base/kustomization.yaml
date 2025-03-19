@@ -9,3 +9,5 @@ resources:
 - ./redis.yaml
 {%- if copier__use_celery %}
 - ./celery.yaml{%- endif %}
+- ./pod-priority.yaml
+- ./pod-disruption-budgets.yaml  

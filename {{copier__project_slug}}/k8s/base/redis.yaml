@@ -28,6 +28,7 @@ spec:
       labels:
         app: redis
     spec:
+      priorityClassName: app-medium-priority
       containers:
         - name: redis
           image: redis:6.0.5
