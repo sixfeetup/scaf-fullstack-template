@@ -6,11 +6,10 @@ metadata:
     app: postgres
 spec:
   instances: 1
-  envFrom:
-  - configMapRef:
-      name: app-config
-  - secretRef:
-      name: secrets-config
+  bootstrap:
+    initdb:
+      database: POSTGRES_DB
+      owner: POSTGRES_USER
   primaryUpdateStrategy: unsupervised
   storage:
     size: 2Gi
@@ -41,7 +40,7 @@ kind: ScheduledBackup
 metadata:
   name: scheduled-backup
 spec:
-  schedule: "0 0 * * 0"  # Runs weekly at midnight on Sunday
+  schedule: "0 0 * * 7"  # Runs weekly at midnight on Sunday
   suspend: false
   immediate: true
   backupOwnerReference: self
