@@ -335,13 +335,5 @@ STRAWBERRY_DJANGO = {
 {%- endif %}
 
 
-{%- if copier__challenge %}
-# ------------------------------------------------------------------------------
-# CHALLENGE settings
-CHALLENGE_SESSION_ID = env("CHALLENGE_SESSION_ID")
-CHALLENGE_JWT_TOKEN = env("CHALLENGE_JWT_TOKEN")
-CHALLENGE_BASE_URL = env("CHALLENGE_BASE_URL")
-{%- endif %}
-
 # Your stuff...
 # ------------------------------------------------------------------------------
