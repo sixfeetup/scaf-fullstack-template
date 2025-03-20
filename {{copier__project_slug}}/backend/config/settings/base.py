@@ -86,9 +86,6 @@ THIRD_PARTY_APPS = [
 
 LOCAL_APPS = [
     "{{ copier__project_slug }}.users.apps.UsersConfig",
-    {% if copier__challenge -%}
-    "{{ copier__project_slug }}.challenge.apps.ChallengeConfig",
-    {%- endif %}
     # Your stuff: custom apps go here
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
