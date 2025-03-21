@@ -1,0 +1,32 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: cloudfront-invalidation
+  annotations:
+    argocd.argoproj.io/hook: PostSync
+    argocd.argoproj.io/hook-delete-policy: HookSucceeded
+spec:
+  backoffLimit: 2
+  template:
+    spec:
+      restartPolicy: OnFailure
+      containers:
+        - name: aws-cli
+          image: amazon/aws-cli:latest
+          envFrom:
+          - secretRef:
+              name: aws-credentials
+          env:
+            - name: DISTRIBUTION_ID
+              valueFrom:
+                secretKeyRef:
+                  name: cloudfront-dist-id
+                  key: distribution_id
+          command:
+            - /bin/sh
+            - -c
+            - |
+              echo "Creating CloudFront invalidation..."
+              aws cloudfront create-invalidation \
+                --distribution-id "$DISTRIBUTION_ID" \
+                --paths "/*"
