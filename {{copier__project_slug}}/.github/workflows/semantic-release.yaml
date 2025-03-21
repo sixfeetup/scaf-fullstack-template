@@ -18,7 +18,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          token: ${{ '{{secrets.GITHUB_TOKEN}}' }}
+          token: ${{ secrets.GITHUB_TOKEN }}
           persist-credentials: false
 
       - name: Setup Node.js
@@ -27,18 +27,9 @@ jobs:
           node-version: "lts/*"
 
       - name: Install Dependencies
-        run: |
-          cd frontend
-          npm clean-install
-
-      - name: Verify the integrity of provenance attestations and registry signatures for installed dependencies
-        run: |
-          cd frontend
-          npm audit signatures
+        run: npm install semantic-release @semantic-release/changelog @semantic-release/git @semantic-release/github @semantic-release/commit-analyzer conventional-changelog-conventionalcommits
 
       - name: Run Semantic Release
-        run: |
-          cd frontend
-          npx semantic-release
+        run: npx semantic-release
         env:
-          GITHUB_TOKEN: ${{ '{{secrets.GITHUB_TOKEN}}' }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
