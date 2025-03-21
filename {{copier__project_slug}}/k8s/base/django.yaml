@@ -28,6 +28,7 @@ spec:
       labels:
         app: backend
     spec:
+      priorityClassName: app-medium-priority
       containers:
         - name: backend
           image: backend:latest

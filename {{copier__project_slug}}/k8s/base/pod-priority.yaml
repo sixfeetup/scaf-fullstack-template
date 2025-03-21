@@ -1,0 +1,25 @@
+apiVersion: scheduling.k8s.io/v1
+kind: PriorityClass
+metadata:
+  name: postgres-high-priority
+value: 100000
+globalDefault: false
+description: "Priority class for PostgreSQL to avoid eviction"
+
+---
+apiVersion: scheduling.k8s.io/v1
+kind: PriorityClass
+metadata:
+  name: app-medium-priority
+value: 50000
+globalDefault: false
+description: "Priority class for the main application stack"
+
+---
+apiVersion: scheduling.k8s.io/v1
+kind: PriorityClass
+metadata:
+  name: monitoring-low-priority
+value: 10000
+globalDefault: false
+description: "Priority class for monitoring tools like Prometheus, Grafana, etc."

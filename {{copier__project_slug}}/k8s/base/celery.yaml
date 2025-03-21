@@ -28,6 +28,7 @@ spec:
       labels:
         app: celery
     spec:
+      priorityClassName: app-medium-priority
       containers:
         - name: celeryworker
           image: backend:latest
