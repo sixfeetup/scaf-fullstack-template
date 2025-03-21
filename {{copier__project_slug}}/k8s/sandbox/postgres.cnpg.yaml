@@ -5,6 +5,7 @@ metadata:
   labels:
     app: postgres
 spec:
+  priorityClassName: postgres-high-priority
   instances: 1
   envFrom:
   - configMapRef:
