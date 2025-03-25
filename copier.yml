@@ -168,26 +168,26 @@ copier__use_sentry:
   default: false
   help: "Do you want to integrate Sentry for error tracking? (y/n) [default: No]"
 
+copier__repo_url:
+  type: str
+  default: "git@github.com:sixfeetup/{{ copier__project_slug }}.git"
+  help: "The URL of the repository."
+  validator: >-
+    {% if not copier__repo_url.startswith("git@") or not ":" in copier__repo_url or not "/" in copier__repo_url.split(":")[1] or not ".git" in copier__repo_url %}
+      Value must follow the format git@provider:orgname/repo.git
+    {% endif %}
+
 copier__source_control_provider:
   type: str
-  default: "github.com"
-  choices:
-    github: "github.com"
-    bitbucket: "bitbucket.org"
-    No source control provider: "none"
-  help: "Which source control provider do you want to use? [default: github]"
+  when: false
+  default: "{{ copier__repo_url.split('@')[1].split(':')[0] }}"
 
 copier__source_control_organization_slug:
   type: str
-  default: "sixfeetup"
-  help: "What is the organization slug for the source control provider?"
+  when: false
+  default: "{{ copier__repo_url.split(':')[1].split('/')[0] }}"
 
 copier__repo_name:
   type: str
-  default: "{{ copier__project_slug }}"
-  help: "The name of the repository."
-
-copier__repo_url:
-  type: str
-  default: "git@{{ copier__source_control_provider }}:{{ copier__source_control_organization_slug }}/{{ copier__project_slug }}.git"
-  help: "The URL of the repository."
+  when: false
+  default: "{{ copier__repo_url.split(':')[1].split('/')[1].replace('.git', '') }}"
