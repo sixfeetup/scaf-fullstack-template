@@ -150,7 +150,7 @@ copier__operating_system:
   choices:
     k3s: "k3s"
     talos: "talos"
-  help: "Which operating system to use?"
+  help: "The lightweight Kubernetes distribution to use."
 
 copier__challenge:
   type: bool
