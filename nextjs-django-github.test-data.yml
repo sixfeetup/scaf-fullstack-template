@@ -6,7 +6,7 @@ copier__debug: n
 copier__description: My Awesome Scaf Project!
 copier__domain_name: sixfeetup.com
 copier__email: iamscafman@sixfeetup.com
-copier__mail_service: Mailgun
+copier__mail_service: Amazon SES
 copier__operating_system: k3s
 copier__project_dash: my-awesome-scaf-project
 copier__project_name: My Awesome Scaf ProjectXXX
