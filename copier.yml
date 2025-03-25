@@ -111,19 +111,13 @@ copier__aws_region:
   type: str
   default: "us-east-1"
   help: "AWS region for deployment."
-  validator: >-
-    {% if not copier__aws_region.strip() %}
-      "AWS region cannot be empty."
-    {% endif %}
+  when: false
 
 copier__aws_account_id:
   type: str
   default: "000000000000"
   help: "AWS account ID for deployment."
-  validator: >-
-    {% if not copier__aws_account_id.strip() %}
-      "AWS account ID cannot be empty."
-    {% endif %}
+  when: false
 
 copier__create_nextjs_frontend:
   type: bool
