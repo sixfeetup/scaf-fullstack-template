@@ -13,15 +13,24 @@ spec:
       containers:
         - name: aws-cli
           image: amazon/aws-cli:latest
-          envFrom:
-          - secretRef:
-              name: aws-credentials
           env:
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: secrets-config
+                  key: AWS_S3_ACCESS_KEY_ID
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: secrets-config
+                  key: AWS_S3_SECRET_ACCESS_KEY
+            - name: AWS_REGION
+              value: us-east-1  # Change if needed
             - name: DISTRIBUTION_ID
               valueFrom:
                 secretKeyRef:
-                  name: cloudfront-dist-id
-                  key: distribution_id
+                  name: secrets-config
+                  key: CLOUDFRONT_DISTRIBUTION_ID
           command:
             - /bin/sh
             - -c
