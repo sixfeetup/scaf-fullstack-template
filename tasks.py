@@ -220,7 +220,7 @@ def remove_challenge_files():
 def init_git_repo():
     print(INFO + "Initializing git repository..." + TERMINATOR)
     print(INFO + f"Current working directory: {os.getcwd()}" + TERMINATOR)
-    subprocess.run(shlex.split("git init ."))
+    subprocess.run(shlex.split("git -c init.defaultBranch=main init . --quiet"))
     print(SUCCESS + "Git repository initialized." + TERMINATOR)
 
 
