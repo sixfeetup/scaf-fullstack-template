@@ -27,10 +27,9 @@ spec:
             - name: AWS_REGION
               value: us-east-1  # Change if needed
             - name: DISTRIBUTION_ID
-              valueFrom:
-                secretKeyRef:
-                  name: secrets-config
-                  key: CLOUDFRONT_DISTRIBUTION_ID
+              envFrom:
+                - configMapRef:
+                  name: app-config
           command:
             - /bin/sh
             - -c
