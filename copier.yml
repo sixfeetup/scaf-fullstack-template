@@ -129,12 +129,13 @@ copier__create_nextjs_frontend:
 
 copier__mail_service:
   type: str
-  default: "Mailgun"
+  default: "Amazon SES"
   choices:
     - "Mailgun"
     - "Amazon SES"
     - "Other SMTP"
   help: "Which mail service do you want to use?"
+  when: false
 
 copier__operating_system:
   type: str
