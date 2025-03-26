@@ -150,27 +150,6 @@ def set_flags_in_secrets():
     set_postgres_password(local_secrets_path)
 
 
-def set_challenge_settings_in_config_map():
-    challenge_config = json.loads(os.getenv("CHALLENGE_CONFIG"))
-    local_configmap_path = os.path.join("k8s", "base", "app.configmap.yaml")
-
-    set_flag(
-        local_configmap_path,
-        "__CHALLENGE_SESSION_ID__",
-        value=challenge_config['session_id']
-    )
-    set_flag(
-        local_configmap_path,
-        "__CHALLENGE_JWT_TOKEN__",
-        value=challenge_config['access_token']
-    )
-    set_flag(
-        local_configmap_path,
-        "__CHALLENGE_BASE_URL__",
-        value=challenge_config['base_url']
-    )
-
-
 def remove_sentry_files():
     os.remove(os.path.join("docs", "sentry.md"))
 
@@ -212,11 +191,6 @@ def remove_graphql_files():
     )
 
 
-def remove_challenge_files():
-    challenge_dir = os.path.join("backend", "{{ copier__project_slug }}", "challenge")
-    shutil.rmtree(challenge_dir)
-
-
 def init_git_repo():
     print(INFO + "Initializing git repository..." + TERMINATOR)
     print(INFO + f"Current working directory: {os.getcwd()}" + TERMINATOR)
@@ -242,9 +216,6 @@ def configure_git_remote():
 def main():
     set_flags_in_secrets()
 
-    if "{{ copier__challenge }}" == "True":
-        set_challenge_settings_in_config_map()
-
     if "{{ copier__use_celery }}" != "True":
         remove_celery_files()
 
@@ -259,9 +230,6 @@ def main():
 
     if "{{ copier__create_nextjs_frontend }}" == "False":
         remove_graphql_files()
-
-    if "{{ copier__challenge }}" == "False":
-        remove_challenge_files()
 
     subprocess.run(shlex.split("black ./backend"))
     subprocess.run(shlex.split("isort --profile=black ./backend"))
