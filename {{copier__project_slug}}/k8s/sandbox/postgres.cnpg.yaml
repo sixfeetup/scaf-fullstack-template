@@ -6,17 +6,17 @@ metadata:
     app: postgres
 spec:
   instances: 1
-  bootstrap:
-    initdb:
-      database: POSTGRES_DB
-      owner: POSTGRES_USER
+  # TODO: Uncomment after first successful backup
+  # bootstrap:
+  #   recovery:
+  #     source: clusterBackup
   primaryUpdateStrategy: unsupervised
   storage:
     size: 2Gi
 
   backup:
     barmanObjectStore:
-      destinationPath: AWS_S3_BACKUP_KUSTOMIZED
+      destinationPath: "s3://{{ copier__project_dash }}-sandbox-backups/"
       s3Credentials:
         accessKeyId:
           name: aws-creds
@@ -34,13 +34,33 @@ spec:
       historyTags:
         backupRetentionPolicy: "keep"
     retentionPolicy: "30d"
+
+  externalClusters:
+    - name: clusterBackup
+      barmanObjectStore:
+        destinationPath: "s3://{{ copier__project_dash }}-sandbox-backups/"
+        # Copy backup from "postgres" to "postgres-restore"
+        # Or set up a Kubernetes Job to copy it
+        serverName: postgres-restore
+        s3Credentials:
+          accessKeyId:
+            name: secrets-config
+            key: AWS_S3_ACCESS_KEY_ID
+          secretAccessKey:
+            name: secrets-config
+            key: AWS_S3_SECRET_ACCESS_KEY
+        data:
+          compression: gzip
+        wal:
+          compression: gzip
+          maxParallel: 8
 ---
 apiVersion: postgresql.cnpg.io/v1
 kind: ScheduledBackup
 metadata:
   name: scheduled-backup
 spec:
-  schedule: "0 0 * * 7"  # Runs weekly at midnight on Sunday
+  schedule: "0 0 * * *"  # Runs daily at midnight
   suspend: false
   immediate: true
   backupOwnerReference: self

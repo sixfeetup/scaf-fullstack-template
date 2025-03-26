@@ -43,6 +43,13 @@ patches:
   target:
     kind: IngressRoute
     name: k8s-ingress
+- patch: |-
+    - op: replace
+      path: /spec/backup/barmanObjectStore/destinationPath
+      value: "s3://{{ copier__project_dash }}-prod-backups/"
+  target:
+    kind: Cluster
+    name: postgres
 
 configMapGenerator:
   - name: app-config
