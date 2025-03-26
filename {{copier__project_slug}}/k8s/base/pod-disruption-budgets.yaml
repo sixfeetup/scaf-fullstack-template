@@ -1,0 +1,53 @@
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: backend-pdb
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: backend
+---
+{%- if copier__use_celery %}
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: celery-pdb
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: celery
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: flower-pdb
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: flower
+---
+{%- endif %}
+{% if copier__create_nextjs_frontend %}
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: frontend-pdb
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: frontend
+---
+{% endif %}
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: redis-pdb
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: redis
