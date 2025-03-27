@@ -104,12 +104,7 @@ class TestGraphQLView:
                     }
                 }
                 """,
-                variables={
-                    "input": {
-                        "id": str(user.id),
-                        "name": expected_name
-                    }
-                },
+                variables={"input": {"id": str(user.id), "name": expected_name}},
             )
 
         assert res.errors is None
