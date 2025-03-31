@@ -150,7 +150,7 @@ copier__operating_system:
   choices:
     k3s: "k3s"
     talos: "talos"
-  help: "The lightweight Kubernetes distribution to use."
+  help: "Deploy Kubernetes on k3s running on Ubuntu or on Talos Linux?"
 
 copier__challenge:
   type: bool
