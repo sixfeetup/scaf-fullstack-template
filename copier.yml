@@ -145,12 +145,6 @@ copier__operating_system:
     talos: "talos"
   help: "Deploy Kubernetes on k3s running on Ubuntu or on Talos Linux?"
 
-copier__challenge:
-  type: bool
-  default: "{{ is_challenge_mode }}"
-  help: "Do you want to enable the challenge feature? (y/n) [default: No]"
-  when: false
-
 copier__use_celery:
   type: bool
   default: false
