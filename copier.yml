@@ -40,12 +40,9 @@ copier__project_slug:
 
 copier__project_dash:
   type: str
-  default: "{{ copier__project_name.lower().replace(' ', '-').replace('_', '-').replace('.', '-').strip() }}"
+  default: "{{ copier__project_slug.lower().replace(' ', '-').replace('_', '-').replace('.', '-').strip() }}"
   help: "The project name in dash-separated format."
-  validator: >-
-    {% if not copier__project_dash.strip() %}
-      "Project dash cannot be empty."
-    {% endif %}
+  when: false
 
 copier__description:
   type: str
@@ -130,19 +127,15 @@ copier__create_nextjs_frontend:
   default: true
   help: "Do you want to create a Next.js frontend? (y/n) [default: Yes]"
 
-copier__debug:
-  type: bool
-  default: false
-  help: "Do you want to enable debug mode? (y/n) [default: No]"
-
 copier__mail_service:
   type: str
-  default: "Mailgun"
+  default: "Amazon SES"
   choices:
     - "Mailgun"
     - "Amazon SES"
     - "Other SMTP"
   help: "Which mail service do you want to use?"
+  when: false
 
 copier__operating_system:
   type: str

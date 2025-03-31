@@ -20,7 +20,6 @@ INFO = "\x1b[1;33m [INFO]: "
 HINT = "\x1b[3;33m"
 SUCCESS = "\x1b[1;32m [SUCCESS]: "
 
-DEBUG_VALUE = "debug"
 
 create_nextjs_frontend = "{{ copier__create_nextjs_frontend }}"
 if not create_nextjs_frontend:
@@ -127,14 +126,6 @@ def set_django_secret_key(file_path):
     return django_secret_key
 
 
-def generate_random_user():
-    return generate_random_string(length=32, using_ascii_letters=True)
-
-
-def generate_postgres_user(debug=False):
-    return DEBUG_VALUE if debug else generate_random_user()
-
-
 def set_postgres_password(file_path, value=None):
     postgres_password = set_flag(
         file_path,
@@ -153,10 +144,10 @@ def append_to_gitignore_file(s):
         gitignore_file.write(os.linesep)
 
 
-def set_flags_in_secrets(postgres_user, celery_flower_user, debug=False):
+def set_flags_in_secrets():
     local_secrets_path = os.path.join("k8s", "local", "secrets.yaml")
     set_django_secret_key(os.path.join("k8s", "local", "secrets.yaml"))
-    set_postgres_password(local_secrets_path, value=DEBUG_VALUE if debug else None)
+    set_postgres_password(local_secrets_path)
 
 
 def remove_sentry_files():
@@ -203,7 +194,7 @@ def remove_graphql_files():
 def init_git_repo():
     print(INFO + "Initializing git repository..." + TERMINATOR)
     print(INFO + f"Current working directory: {os.getcwd()}" + TERMINATOR)
-    subprocess.run(shlex.split("git init ."))
+    subprocess.run(shlex.split("git -c init.defaultBranch=main init . --quiet"))
     print(SUCCESS + "Git repository initialized." + TERMINATOR)
 
 
@@ -223,16 +214,7 @@ def configure_git_remote():
 
 
 def main():
-    if "{{ copier__debug }}" == "True":
-        debug = True
-    else:
-        debug = False
-
-    set_flags_in_secrets(
-        DEBUG_VALUE if debug else generate_random_user(),
-        DEBUG_VALUE if debug else generate_random_user(),
-        debug=debug,
-    )
+    set_flags_in_secrets()
 
     if "{{ copier__use_celery }}" != "True":
         remove_celery_files()

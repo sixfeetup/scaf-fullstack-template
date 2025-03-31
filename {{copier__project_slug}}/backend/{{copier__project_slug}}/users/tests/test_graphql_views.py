@@ -30,7 +30,7 @@ class TestGraphQLView:
             """,
             asserts_errors=False,
         )
-        assert res.data == None
+        assert not res.data
         assert res.errors[0]["message"] == "User is not logged in."
 
     def test_me_authenticated(self, user: User, graphql_client: TestClient):
@@ -104,12 +104,7 @@ class TestGraphQLView:
                     }
                 }
                 """,
-                variables={
-                    "input": {
-                        "id": str(user.id),
-                        "name": expected_name
-                    }
-                },
+                variables={"input": {"id": str(user.id), "name": expected_name}},
             )
 
         assert res.errors is None
