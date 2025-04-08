@@ -50,6 +50,14 @@ patches:
   target:
     kind: Cluster
     name: postgres
+{% if copier__create_nextjs_frontend %}
+- patch: |-
+    - op: add
+      path: /data/DISTRIBUTION_ID
+      value: "CHANGEME"
+  target:
+    kind: ConfigMap
+    name: app-config{% endif %}
 
 configMapGenerator:
   - name: app-config
