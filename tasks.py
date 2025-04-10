@@ -4,7 +4,6 @@ import shlex
 import shutil
 import string
 import subprocess
-import json
 
 try:
     # Inspired by
@@ -213,6 +212,32 @@ def configure_git_remote():
         )
 
 
+def party_popper():
+    for _ in range(4):
+        print("\r🎉 POP! 💥", end="", flush=True)
+        subprocess.run(["sleep", "0.3"])
+        print("\r💥 POP! 🎉", end="", flush=True)
+        subprocess.run(["sleep", "0.3"])
+
+    print(f"\r🎊 Congrats! Your {{ copier__project_slug }} project is ready! 🎉")
+    print()
+    print("To get started, run:")
+    print(f"cd {{ copier__project_slug }}")
+    print("tilt up")
+    print()
+
+
+def run_setup():
+    subprocess.run(shlex.split("kind create cluster --name {{ copier__project_dash }}"))
+    subprocess.run(shlex.split("make compile"))
+
+    print("Dependencies compiled successfully.")
+    print("Performing initial commit.")
+
+    subprocess.run(shlex.split("git add ."))
+    subprocess.run(shlex.split("git commit -m 'Initial commit' --quiet"))
+
+
 def main():
     set_flags_in_secrets()
 
@@ -236,6 +261,8 @@ def main():
 
     init_git_repo()
     configure_git_remote()
+    run_setup()
+    party_popper()
 
     print(SUCCESS + "Project initialized, keep up the good work!!" + TERMINATOR)
 
