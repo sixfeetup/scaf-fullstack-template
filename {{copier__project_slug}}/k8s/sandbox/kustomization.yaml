@@ -64,7 +64,14 @@ patches:
         - name: regcred
   target:
     kind: Deployment
-    name: frontend{% endif %}
+    name: frontend
+- patch: |-
+      - op: add
+        path: /data/DISTRIBUTION_ID
+        value: "CHANGEME"
+    target:
+      kind: ConfigMap
+      name: app-config{% endif %}
 
 configMapGenerator:
   - name: app-config
