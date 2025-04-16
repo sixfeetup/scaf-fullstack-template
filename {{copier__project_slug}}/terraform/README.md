@@ -149,6 +149,8 @@ sandbox, staging).
    terraform apply tfplan.out
    ```
 
+6. After the environment is successfully deployed, note the CloudFront distribution ID that was created, and update the `DISTRIBUTION_ID` value in the corresponding kustomization.yaml file (e.g., sandbox/kustomization.yaml or production/kustomization.yaml) to reflect the correct value.
+
 ## Summary
 
 The order of operations is critical for the correct setup of the Terraform
