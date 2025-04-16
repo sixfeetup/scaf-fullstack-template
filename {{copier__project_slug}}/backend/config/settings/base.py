@@ -298,15 +298,15 @@ CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
 # django-allauth
 # ------------------------------------------------------------------------------
 ACCOUNT_ALLOW_REGISTRATION = env.bool("DJANGO_ACCOUNT_ALLOW_REGISTRATION", True)
-# https://django-allauth.readthedocs.io/en/latest/configuration.html
-ACCOUNT_AUTHENTICATION_METHOD = "username"
-# https://django-allauth.readthedocs.io/en/latest/configuration.html
-ACCOUNT_EMAIL_REQUIRED = True
-# https://django-allauth.readthedocs.io/en/latest/configuration.html
+# https://django-allauth.readthedocs.io/en/latest/account/configuration.html
+ACCOUNT_LOGIN_METHODS = {"username"}
+# https://django-allauth.readthedocs.io/en/latest/account/configuration.html
+ACCOUNT_SIGNUP_FIELDS = ["email*", "username*", "password1*", "password2*"]
+# https://django-allauth.readthedocs.io/en/latest/account/configuration.html
 ACCOUNT_EMAIL_VERIFICATION = "mandatory"
-# https://django-allauth.readthedocs.io/en/latest/configuration.html
+# https://django-allauth.readthedocs.io/en/latest/account/configuration.html
 ACCOUNT_ADAPTER = "{{ copier__project_slug }}.users.adapters.AccountAdapter"
-# https://django-allauth.readthedocs.io/en/latest/configuration.html
+# https://django-allauth.readthedocs.io/en/latest/account/configuration.html
 SOCIALACCOUNT_ADAPTER = "{{ copier__project_slug }}.users.adapters.SocialAccountAdapter"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
