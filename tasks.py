@@ -21,10 +21,16 @@ SUCCESS = "\x1b[1;32m [SUCCESS]: "
 
 
 create_nextjs_frontend = "{{ copier__create_nextjs_frontend }}"
-if not create_nextjs_frontend:
+if create_nextjs_frontend == "False":
     shutil.rmtree("frontend")
     file_names = [
         os.path.join("k8s", "base", "frontend.yaml"),
+        os.path.join(
+            "argocd",
+            "base",
+            "{{ copier__project_slug }}",
+            "cloudfront-invalidation-hook.yaml",
+        ),
     ]
     for file_name in file_names:
         os.remove(file_name)
