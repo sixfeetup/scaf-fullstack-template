@@ -16,14 +16,19 @@ _exclude:
   - ".svn"
   - "*.test-data.yml"
 
-copier__project_name:
+copier__project_name_raw:
   type: str
   default: "My Awesome Scaf Project"
   help: "The name of your project."
   validator: >-
-    {% if not copier__project_name.strip() %}
+    {% if not copier__project_name_raw.strip() %}
       "Project name cannot be empty."
     {% endif %}
+
+copier__project_name:
+  type: str
+  default: "{{ copier__project_name_raw | replace(\"'\", \"\") | replace('\"', '') }}"
+  when: false
 
 copier__project_slug:
   type: str
