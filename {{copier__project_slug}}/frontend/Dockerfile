@@ -1,4 +1,4 @@
-FROM node:iron as base
+FROM node:lts AS base
 FROM base AS build
 
 WORKDIR /app
