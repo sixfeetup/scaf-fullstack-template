@@ -117,7 +117,7 @@ compile: backend/requirements/base.in backend/requirements/tests.in ## compile l
 		 uv pip compile --upgrade --output-file /local/local.txt /local/local.in"
 
 frontend-dependencies:
-	@docker run --rm -v $(shell pwd)/frontend:/app node:lts /bin/bash -c "npm install"
+	@docker run --rm -w "/app" -v $(shell pwd)/frontend:/app node:lts /bin/bash -c "npm install"
 
 shell-backend:  ## Shell into the running Django container
 	$(KUBECTL_EXEC_BACKEND)
