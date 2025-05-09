@@ -48,6 +48,7 @@ syncback(
     "/app/",
     target_dir="./frontend",
     rsync_path='/app/rsync.tilt',
+    ignore=[".next", "next-env.d.ts", "node_modules", "rsync.tilt"],
 )
 {% endif %}
 
