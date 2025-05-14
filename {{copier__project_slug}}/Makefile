@@ -116,6 +116,15 @@ compile: backend/requirements/base.in backend/requirements/tests.in ## compile l
 		 uv pip compile --upgrade --generate-hashes --output-file /local/tests.txt /local/tests.in; \
 		 uv pip compile --upgrade --output-file /local/local.txt /local/local.in"
 
+compile-frontend: frontend/package.json ## compile latest frontend dependencies to be built into the docker image
+	@docker run --rm -w "/app" -v $(shell pwd)/frontend:/app node:lts /bin/bash -c "npm install"
+
+init-frontend-dependencies: ## compile initial frontend dependencies to be built into the docker image
+	@docker run --rm -w "/app" -v $(shell pwd)/frontend:/app node:lts /bin/bash -c \
+		"xargs npm install < dependencies-init.txt"
+	@docker run --rm -w "/app" -v $(shell pwd)/frontend:/app node:lts /bin/bash -c \
+		"xargs npm install --save-dev < dependencies-dev-init.txt"
+
 shell-backend:  ## Shell into the running Django container
 	$(KUBECTL_EXEC_BACKEND)
 

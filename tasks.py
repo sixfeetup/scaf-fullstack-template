@@ -34,6 +34,8 @@ if create_nextjs_frontend == "False":
     ]
     for file_name in file_names:
         os.remove(file_name)
+else:
+    subprocess.run(shlex.split("make init-frontend-dependencies"))
 
 
 def remove_celery_files():
