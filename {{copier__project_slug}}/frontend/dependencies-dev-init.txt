@@ -1,6 +1,7 @@
 @graphql-codegen/cli
 @graphql-codegen/client-preset
 @graphql-typed-document-node/core
+@tailwindcss/postcss
 @testing-library/dom
 @testing-library/react
 @types/lodash
@@ -17,7 +18,6 @@ eslint-plugin-react-hooks
 graphql
 husky
 jsdom
-postcss
 prettier
 prettier-plugin-tailwindcss
 tailwindcss
