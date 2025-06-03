@@ -78,9 +78,10 @@ Resource limits have been predefined for both Django and NextJS services to ensu
 - **Django**:
   - Requests: `cpu: 200m`, `memory: 300Mi`
   - Limits: `cpu: 250m`, `memory: 400Mi`
-
+{% if copier__create_nextjs_frontend %}
 - **NextJS**:
   - Requests: `cpu: 100m`, `memory: 200Mi`
   - Limits: `cpu: 250m`, `memory: 300Mi`
+{% endif %}
 
 Ensure these values are appropriate for your environment. If needed, adjust them based on real workload observations in a staging or production environment to balance performance and resource consumption.
