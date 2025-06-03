@@ -148,8 +148,9 @@ sandbox, staging).
    ```bash
    terraform apply tfplan.out
    ```
-
+{% if copier__create_nextjs_frontend %}
 6. After the environment is successfully deployed, note the CloudFront distribution ID that was created, and update the `DISTRIBUTION_ID` value in the corresponding kustomization.yaml file (e.g., sandbox/kustomization.yaml or production/kustomization.yaml) to reflect the correct value.
+{% endif %}
 
 ## Summary
 
