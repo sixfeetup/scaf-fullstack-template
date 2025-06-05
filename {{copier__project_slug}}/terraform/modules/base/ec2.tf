@@ -24,7 +24,7 @@ resource "tls_private_key" "deploy_key" {
 }
 
 resource "aws_key_pair" "default_key" {
-  key_name   = "hotelnames_deploy_key"
+  key_name   = "{{ copier__project_slug }}_deploy_key"
   public_key = tls_private_key.deploy_key.public_key_openssh
 }
 

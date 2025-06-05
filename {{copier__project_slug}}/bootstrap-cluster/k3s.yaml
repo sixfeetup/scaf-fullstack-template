@@ -157,7 +157,7 @@ tasks:
         fi
         scp -o StrictHostKeyChecking=no -i {{ '{{.SSH_KEY}}' }} ubuntu@{{ '{{.IP}}' }}:/etc/rancher/k3s/k3s.yaml {{ '{{.ENV}}' }}/kubeconfig
       - sed -i'' -e "s/127.0.0.1/{{ '{{.IP}}' }}/g" {{ '{{.ENV}}' }}/kubeconfig
-      - sed -i'' -e "s/default/hotelnames-{{ '{{.ENV}}' }}/g" {{ '{{.ENV}}' }}/kubeconfig
+      - sed -i'' -e "s/default/{{copier__project_slug}}-{{ '{{.ENV}}' }}/g" {{ '{{.ENV}}' }}/kubeconfig
       - chmod 600 {{ '{{.ENV}}' }}/kubeconfig
 
   store-kubeconfig:
