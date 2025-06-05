@@ -1,9 +1,9 @@
 # Build all of the dependencies then we will build the actual application image
 FROM python:3.12-slim as build
 
-ENV PYTHONUNBUFFERED 1
-ENV PYTHONDONTWRITEBYTECODE 1
-ENV BOGUS 1
+ENV PYTHONUNBUFFERED=1
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV BOGUS=1
 
 ARG DEVEL=no
 ARG TEST=no
@@ -58,10 +58,10 @@ RUN set -x \
 # Now we can build the application image
 FROM python:3.12-slim
 
-ENV PYTHONUNBUFFERED 1
-ENV PYTHONPATH /app
+ENV PYTHONUNBUFFERED=1
+ENV PYTHONPATH="/app"
 ENV PATH="/app/bin:${PATH}"
-ENV BOGUS 1
+ENV BOGUS=1
 
 WORKDIR /app/src
 
