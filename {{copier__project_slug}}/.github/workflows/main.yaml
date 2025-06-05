@@ -112,6 +112,9 @@ jobs:
           echo "BRANCH_NAME=$(echo ${{ '{{ github.ref }}' }} | sed s,refs/heads/,, | sed s,/,-,g)" >> $GITHUB_ENV
           export TARGET_ENV=$(if [ "$BRANCH_NAME" = "main" ]; then echo "prod"; else echo "sandbox"; fi)
           echo "TARGET_ENV=$TARGET_ENV" >> $GITHUB_ENV
+      
+      - name: Set Backend ECR Repo
+        run: |
           echo "ECR_REPO_BACKEND=${{ '{{ env.AWS_ACCOUNT_ID }}' }}.dkr.ecr.${{ '{{ env.AWS_REGION }}' }}.amazonaws.com/{{ copier__project_dash }}-$TARGET_ENV-backend" >> $GITHUB_ENV
 
       - name: Build and push backend image
@@ -121,10 +124,26 @@ jobs:
           push: true
           tags: ${{ '{{ env.ECR_REPO_BACKEND }}' }}:${{ '{{ env.SHORT_SHA }}' }},${{ '{{ env.ECR_REPO_BACKEND }}' }}:${{ '{{ env.BRANCH_NAME }}' }}
 
+      {% if copier__create_nextjs_frontend %}
+      - name: Set Frontend ECR Repo
+        run: |
+          echo "ECR_REPO_FRONTEND=${{ '{{ env.AWS_ACCOUNT_ID }}' }}.dkr.ecr.${{ '{{ env.AWS_REGION }}' }}.amazonaws.com/{{ copier__project_dash }}-$TARGET_ENV-frontend" >> $GITHUB_ENV
+      
+      - name: Build and push frontend image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./frontend
+          push: true
+          tags: ${{ '{{env.ECR_REPO_FRONTEND}}' }}:${{ '{{ env.SHORT_SHA }}' }},${{ '{{ env.ECR_REPO_FRONTEND }}' }}:${{ '{{ env.BRANCH_NAME }}' }}
+      {% endif %}
+
       - name: Tag Images
         run: |
           cd k8s/$TARGET_ENV
           kustomize edit set image backend=$ECR_REPO_BACKEND:$SHORT_SHA
+          {% if copier__create_nextjs_frontend %}
+          kustomize edit set image frontend=$ECR_REPO_FRONTEND:$SHORT_SHA
+          {% endif %}
 
       - name: Commit & Push to GitHub
         run: |
