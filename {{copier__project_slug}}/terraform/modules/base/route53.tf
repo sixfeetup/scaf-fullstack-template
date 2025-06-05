@@ -18,7 +18,7 @@ resource "aws_route53_record" "k8s" {
   records = [module.elb_k8s_elb.elb_dns_name]
   ttl     = 600
 }
-
+{% if copier__create_nextjs_frontend %}
 resource "aws_route53_record" "nextjs" {
   zone_id = aws_route53_zone.route_zone.zone_id
   name    = var.nextjs_domain_name
@@ -50,6 +50,7 @@ resource "aws_route53_record" "frontend-v6" {
     evaluate_target_health = false
   }
 }
+{% endif %}
 
 # record for argocd call
 resource "aws_route53_record" "argocd" {

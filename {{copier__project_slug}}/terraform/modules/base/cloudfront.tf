@@ -36,7 +36,7 @@ resource "aws_cloudfront_distribution" "cloudfront" {
     origin_access_control_id = aws_cloudfront_origin_access_control.static_storage.id
   }
 
-
+  {% if copier__create_nextjs_frontend %}
   // Kubernetes cluster
   origin {
     domain_name = var.nextjs_domain_name
@@ -69,6 +69,17 @@ resource "aws_cloudfront_distribution" "cloudfront" {
     viewer_protocol_policy   = "redirect-to-https"
     target_origin_id         = var.cluster_name
   }
+  {% else %}
+  // Default cache behavior for static files only (no frontend)
+  default_cache_behavior {
+    cache_policy_id          = data.aws_cloudfront_cache_policy.caching_optimized.id
+    origin_request_policy_id = data.aws_cloudfront_origin_request_policy.all_viewer_except_host.id
+    allowed_methods          = ["GET", "HEAD"]
+    cached_methods           = ["GET", "HEAD"]
+    viewer_protocol_policy   = "redirect-to-https"
+    target_origin_id         = aws_s3_bucket.static_storage.id
+  }
+  {% endif %}
 
   viewer_certificate {
     ssl_support_method       = "sni-only"

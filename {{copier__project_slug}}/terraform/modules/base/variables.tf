@@ -42,11 +42,12 @@ variable "cluster_domain_name" {
   type    = string
   default = "k8s.{{ copier__domain_name }}"
 }
-
+{% if copier__create_nextjs_frontend %}
 variable "nextjs_domain_name" {
   type    = string
   default = "nextjs.{{ copier__domain_name }}"
 }
+{% endif %}
 
 variable "argocd_domain_name" {
   type    = string
