@@ -24,3 +24,8 @@ output "account_id" {
 output "domain_name" {
   value = "{{ copier__domain_name }}"
 }
+
+output "existing_hosted_zone" {
+  description = "Existing hosted zone name"
+  value       = "{{ copier__existing_hosted_zone }}"
+}
