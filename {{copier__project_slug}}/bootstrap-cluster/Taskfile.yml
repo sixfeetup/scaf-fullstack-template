@@ -1,0 +1,29 @@
+version: '3'
+ars:
+  ENV: {{ "'{{.ENV}}'" }}
+
+includes:
+  argocd:
+    taskfile: ./argocd.yaml
+    vars:
+      ENV: {{ "'{{.ENV}}'" }}
+      ARGOCD_VERSION: {{ "'{{.ARGOCD_VERSION}}'" }}
+
+{%- if copier__operating_system == "talos" %}
+  talos:
+    taskfile: ./talos.yaml
+    vars:
+      ENV: {{ "'{{.ENV}}'" }}
+{%- elif copier__operating_system == "k3s" %}
+  k3s:
+    taskfile: ./k3s.yaml
+    vars:
+      ENV: {{ "'{{.ENV}}'" }}
+{%- endif %}
+
+tasks:
+  default:
+    desc: |
+      List all available tasks in the Taskfile.
+    cmds:
+      - task --list
