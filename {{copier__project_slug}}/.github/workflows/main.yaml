@@ -69,26 +69,76 @@ jobs:
           POSTGRES_PORT: 5432
 {% if copier__use_celery %}          CELERY_BROKER_URL: redis://127.0.0.1:6379/0{% endif %}
 
-  build-and-push-images:
+  build-backend-image:
     if: github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
-{% if copier__create_nextjs_frontend %}
-    needs: [check-lint-and-formatting, backend-test, check-lint-and-test-frontend]
-{% else %}
     needs: [check-lint-and-formatting, backend-test]
-{% endif %}
+    outputs:
+      short-sha: ${{ '{{ steps.vars.outputs.short-sha }}' }}
+      branch-name: ${{ '{{ steps.vars.outputs.branch-name }}' }}
+      target-env: ${{ '{{ steps.vars.outputs.target-env }}' }}
 
     permissions:
       id-token: write
-      contents: write
+      contents: read
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Configure AWS credentials from OIDC
+        uses: aws-actions/configure-aws-credentials@v4
         with:
-          fetch-depth: 0
-          token: ${{ '{{secrets.GITHUB_TOKEN}}' }}
-          persist-credentials: true
+          role-to-assume: arn:aws:iam::${{ '{{ env.AWS_ACCOUNT_ID }}' }}:role/{{ copier__project_slug }}-github-oidc-role
+          aws-region: ${{ '{{ env.AWS_REGION }}' }}
+
+      - name: Log in to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Set environment variables
+        id: vars
+        run: |
+          SHORT_SHA=$(git rev-parse --short HEAD)
+          BRANCH_NAME=$(echo ${{ '{{ github.ref }}' }} | sed s,refs/heads/,, | sed s,/,-,g)
+          TARGET_ENV=$(if [ "$BRANCH_NAME" = "main" ]; then echo "prod"; else echo "sandbox"; fi)
+          echo "short-sha=$SHORT_SHA" >> $GITHUB_OUTPUT
+          echo "branch-name=$BRANCH_NAME" >> $GITHUB_OUTPUT
+          echo "target-env=$TARGET_ENV" >> $GITHUB_OUTPUT
+          echo "SHORT_SHA=$SHORT_SHA" >> $GITHUB_ENV
+          echo "BRANCH_NAME=$BRANCH_NAME" >> $GITHUB_ENV
+          echo "TARGET_ENV=$TARGET_ENV" >> $GITHUB_ENV
+      
+      - name: Set Backend ECR Repo
+        run: |
+          echo "ECR_REPO_BACKEND=${{ '{{ env.AWS_ACCOUNT_ID }}' }}.dkr.ecr.${{ '{{ env.AWS_REGION }}' }}.amazonaws.com/{{ copier__project_dash }}-$TARGET_ENV-backend" >> $GITHUB_ENV
+
+      - name: Build and push backend image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./backend
+          push: true
+          tags: ${{ '{{ env.ECR_REPO_BACKEND }}' }}:${{ '{{ env.SHORT_SHA }}' }},${{ '{{ env.ECR_REPO_BACKEND }}' }}:${{ '{{ env.BRANCH_NAME }}' }}
+
+{% if copier__create_nextjs_frontend %}
+  build-frontend-image:
+    if: github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    needs: [check-lint-and-test-frontend]
+
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
@@ -112,19 +162,7 @@ jobs:
           echo "BRANCH_NAME=$(echo ${{ '{{ github.ref }}' }} | sed s,refs/heads/,, | sed s,/,-,g)" >> $GITHUB_ENV
           export TARGET_ENV=$(if [ "$BRANCH_NAME" = "main" ]; then echo "prod"; else echo "sandbox"; fi)
           echo "TARGET_ENV=$TARGET_ENV" >> $GITHUB_ENV
-      
-      - name: Set Backend ECR Repo
-        run: |
-          echo "ECR_REPO_BACKEND=${{ '{{ env.AWS_ACCOUNT_ID }}' }}.dkr.ecr.${{ '{{ env.AWS_REGION }}' }}.amazonaws.com/{{ copier__project_dash }}-$TARGET_ENV-backend" >> $GITHUB_ENV
 
-      - name: Build and push backend image
-        uses: docker/build-push-action@v5
-        with:
-          context: ./backend
-          push: true
-          tags: ${{ '{{ env.ECR_REPO_BACKEND }}' }}:${{ '{{ env.SHORT_SHA }}' }},${{ '{{ env.ECR_REPO_BACKEND }}' }}:${{ '{{ env.BRANCH_NAME }}' }}
-
-      {% if copier__create_nextjs_frontend %}
       - name: Set Frontend ECR Repo
         run: |
           echo "ECR_REPO_FRONTEND=${{ '{{ env.AWS_ACCOUNT_ID }}' }}.dkr.ecr.${{ '{{ env.AWS_REGION }}' }}.amazonaws.com/{{ copier__project_dash }}-$TARGET_ENV-frontend" >> $GITHUB_ENV
@@ -135,7 +173,40 @@ jobs:
           context: ./frontend
           push: true
           tags: ${{ '{{env.ECR_REPO_FRONTEND}}' }}:${{ '{{ env.SHORT_SHA }}' }},${{ '{{ env.ECR_REPO_FRONTEND }}' }}:${{ '{{ env.BRANCH_NAME }}' }}
-      {% endif %}
+{% endif %}
+
+  update-manifests:
+    if: github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+{% if copier__create_nextjs_frontend %}
+    needs: [build-backend-image, build-frontend-image]
+{% else %}
+    needs: [build-backend-image]
+{% endif %}
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ '{{secrets.GITHUB_TOKEN}}' }}
+          persist-credentials: true
+
+      - name: Get environment variables from backend job
+        run: |
+          echo "SHORT_SHA=${{ '{{ needs.build-backend-image.outputs.short-sha }}' }}" >> $GITHUB_ENV
+          echo "BRANCH_NAME=${{ '{{ needs.build-backend-image.outputs.branch-name }}' }}" >> $GITHUB_ENV
+          echo "TARGET_ENV=${{ '{{ needs.build-backend-image.outputs.target-env }}' }}" >> $GITHUB_ENV
+
+      - name: Set ECR Repos
+        run: |
+          echo "ECR_REPO_BACKEND=${{ '{{ env.AWS_ACCOUNT_ID }}' }}.dkr.ecr.${{ '{{ env.AWS_REGION }}' }}.amazonaws.com/{{ copier__project_dash }}-$TARGET_ENV-backend" >> $GITHUB_ENV
+          {% if copier__create_nextjs_frontend %}
+          echo "ECR_REPO_FRONTEND=${{ '{{ env.AWS_ACCOUNT_ID }}' }}.dkr.ecr.${{ '{{ env.AWS_REGION }}' }}.amazonaws.com/{{ copier__project_dash }}-$TARGET_ENV-frontend" >> $GITHUB_ENV
+          {% endif %}
 
       - name: Tag Images
         run: |
