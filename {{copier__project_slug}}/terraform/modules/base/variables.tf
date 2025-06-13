@@ -133,3 +133,9 @@ variable "tags" {
   type    = map(string)
   default = {}
 }
+
+variable "existing_hosted_zone" {
+  description = "Name of existing hosted zone to use instead of creating a new one"
+  type        = string
+  default     = "{{ copier__existing_hosted_zone }}"
+}

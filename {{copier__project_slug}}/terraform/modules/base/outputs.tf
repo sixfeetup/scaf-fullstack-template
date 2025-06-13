@@ -42,3 +42,13 @@ output "private_deploy_key" {
 output "public_deploy_key" {
   value     = tls_private_key.deploy_key.public_key_openssh
 }
+
+output "cloudfront_distribution_id" {
+  description = "The CloudFront distribution ID"
+  value       = aws_cloudfront_distribution.cloudfront.id
+}
+
+output "cloudfront_domain_name" {
+  description = "The CloudFront distribution domain name"
+  value       = aws_cloudfront_distribution.cloudfront.domain_name
+}

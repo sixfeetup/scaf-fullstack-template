@@ -24,7 +24,7 @@ run the Terraform configurations.
 
 ## Setup Instructions
 
-### Step 1: AWS Authentication
+### Step 1: AWS Configuration
 
 Ensure that you have installed AWS CLI version 2, as AWS SSO support is only
 available in version 2 and above. Create a new AWS profile in `~/.aws/config`.
@@ -43,126 +43,22 @@ output = json
 Note the `sso_role_name` setting above. Make sure to use a role that provides
 you with the necessary permissions to deploy infrastructure on your AWS account.
 
-Export the `AWS_PROFILE` environment variable and continue logging in:
+Export the `AWS_PROFILE` environment variable:
 
 ```
 $ export AWS_PROFILE=scaf
-$ aws sso login
 ```
-
-This should open your browser, allowing you to sign in to your AWS account. Upon
-successful login, you will see a message to confirm it:
+Then, to deploy to sandbox you can run:
 
 ```
-Successfully logged into Start URL: https://sixfeetup.awsapps.com/start
+$ task deploy-sandbox
 ```
 
-### Step 2: Bootstrap
+TODO: replace with automation between the environment creation and the argocd bootstrap:
 
-The first step is to bootstrap the Terraform state. This involves creating an S3
-bucket and a DynamoDB table to manage the state and locking.
 
-1. Navigate to the `bootstrap` directory:
-
-   ```bash
-   cd bootstrap
-   ```
-
-2. Initialize the Terraform configuration:
-
-   ```bash
-   terraform init
-   ```
-
-3. Plan the Terraform configuration:
-
-   ```bash
-   terraform plan -out="tfplan.out"
-   ```
-
-4. Apply the Terraform configuration:
-   ```bash
-   terraform apply tfplan.out
-   ```
-
-### Step 3: GitHub OIDC Provider
-
-After bootstrapping the state, the next step is to set up the GitHub OIDC
-provider.
-
-1. Navigate to the `github` directory:
-
-   ```bash
-   cd ../github
-   ```
-
-2. Initialize the Terraform configuration:
-
-   ```bash
-   terraform init
-   ```
-
-3. Plan the Terraform configuration:
-
-   ```bash
-   terraform plan -out="tfplan.out"
-   ```
-
-4. Apply the Terraform configuration:
-   ```bash
-   terraform apply tfplan.out
-   ```
-
-### Step 4: Environment Configurations
-
-The final step is to set up the respective environment configurations (prod,
-sandbox, staging).
-
-1. Navigate to the desired environment directory (e.g., `prod`, `sandbox`,
-   `staging`):
-
-   ```bash
-   cd ../<environment>
-   ```
-
-2. Initialize the Terraform configuration:
-
-   ```bash
-   terraform init
-   ```
-
-3. Restrict the IPs allowed to manage the cluster. Edit
-   `<environment>/cluster.tf` and set the following variables:
-
-   ```
-     admin_allowed_ips = "10.0.0.1/32,10.0.0.2/32"
-   ```
-
-4. Plan the Terraform configuration:
-
-   ```bash
-   terraform plan -out="tfplan.out"
-   ```
-
-5. Apply the Terraform configuration:
-   ```bash
-   terraform apply tfplan.out
-   ```
+```
 {% if copier__create_nextjs_frontend %}
 6. After the environment is successfully deployed, note the CloudFront distribution ID that was created, and update the `DISTRIBUTION_ID` value in the corresponding kustomization.yaml file (e.g., sandbox/kustomization.yaml or production/kustomization.yaml) to reflect the correct value.
 {% endif %}
 
-## Summary
-
-The order of operations is critical for the correct setup of the Terraform
-configurations:
-
-1. Bootstrap the Terraform state (`bootstrap` directory).
-2. Set up the GitHub OIDC provider (`github` directory).
-3. Configure the desired environment (`prod`, `sandbox`, or `staging` directory).
-
-Each step involves running `terraform init`, `terraform plan -out="tfplan.out"`,
-and `terraform apply tfplan.out`.
-
-Following these steps ensures that your infrastructure is set up correctly and
-efficiently.

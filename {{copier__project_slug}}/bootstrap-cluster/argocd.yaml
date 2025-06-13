@@ -1,7 +1,7 @@
 version: '3'
+silent: true
 
 env:
-  KUBECONFIG: ./{{ '{{.ENV}}' }}/kubeconfig
   GITHUB_DEPLOY_KEY_TITLE: "{{ copier__project_name }} ArgoCD GitHub Deploy Key"
 
 tasks:
@@ -21,11 +21,16 @@ tasks:
     desc: Setup ArgoCD
     cmds:
       - task: install
+        vars: {ENV: {{ "'{{.ENV}}'" }}, ARGOCD_VERSION: {{ "'{{.ARGOCD_VERSION}}'" }}}
       - task: create_repo_credentials_secret
+        vars: {ENV: {{ "'{{.ENV}}'" }}}
       - task: bootstrap_root_app
+        vars: {ENV: {{ "'{{.ENV}}'" }}}
 
   install:
     desc: Deploy ArgoCD using Helm
+    env:
+      KUBECONFIG: "{{ '{{.ENV}}' }}/kubeconfig"
     cmds:
       - helm install argocd argo-cd
           --repo https://argoproj.github.io/argo-helm
@@ -41,6 +46,8 @@ tasks:
       GITHUB_DEPLOY_KEY_B64:
         sh: op read "op://{{ copier__project_name }}/{{ '{{.GITHUB_DEPLOY_KEY_TITLE}}' }}/private key?ssh-format=openssh" | base64 -w0
     desc: Create and apply repo credentials secret for each repo
+    env:
+      KUBECONFIG: "{{ '{{.ENV}}' }}/kubeconfig"
     cmds:
       - |
         cat <<EOF | kubectl apply -f -
@@ -59,11 +66,13 @@ tasks:
 
   create_github_webhook_secret:
     requires:
-      vars: [ARGOCD_GITHUB_ACCESS_TOKEN]
+      vars: [ARGOCD_GITHUB_ACCESS_TOKEN, ENV]
     desc: |
       Create GitHub webhook secret and apply
 
       Usage: ARGOCD_GITHUB_ACCESS_TOKEN="secret token" task argocd:create_github_webhook_secret
+    env:
+      KUBECONFIG: "{{ '{{.ENV}}' }}/kubeconfig"
     cmds:
       - kubectl -n argocd create secret generic github-token
           --from-literal=token="{{ '{{ARGOCD_GITHUB_ACCESS_TOKEN}}' }}"
@@ -76,5 +85,7 @@ tasks:
       BRANCH:
         sh: ([ "$ENV" = "production" ] && echo "main" || echo "develop")
     desc: Bootstrap the Cluster
+    env:
+      KUBECONFIG: "{{ '{{.ENV}}' }}/kubeconfig"
     cmds:
       - cat root-app.template.yaml | envsubst | kubectl apply -f -

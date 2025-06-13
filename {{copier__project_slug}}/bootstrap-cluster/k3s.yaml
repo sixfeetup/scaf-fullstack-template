@@ -1,9 +1,8 @@
 ---
 version: '3'
-env:
-  KUBECONFIG: ./{{ '{{.ENV}}' }}/kubeconfig
-  SSH_KEY: ./{{ '{{.ENV}}' }}/id_ed25519
-  TFDIR: ../terraform/{{ '{{.ENV}}' }}
+silent: true
+vars:
+  ENV: {{ "'{{.ENV}}'" }}
 
 tasks:
   bootstrap:
@@ -13,25 +12,31 @@ tasks:
       vars: [ENV]
     cmds:
       - task: save-node-ips
+        vars: {ENV: {{ "'{{.ENV}}'" }}}
       - task: setup-ssh-key
+        vars: {ENV: {{ "'{{.ENV}}'" }}}
       - task: install-ecr-credential-helper
+        vars: {ENV: {{ "'{{.ENV}}'" }}}
       - task: install-k3s
+        vars: {ENV: {{ "'{{.ENV}}'" }}}
       - task: fetch-kubeconfig
+        vars: {ENV: {{ "'{{.ENV}}'" }}}
       - task: store-kubeconfig
+        vars: {ENV: {{ "'{{.ENV}}'" }}}
 
   save-node-ips:
     desc: Save node IPs to files for later reference
     requires:
       vars: [ENV]
     cmds:
-      - tofu -chdir=$TFDIR output control_plane_nodes_public_ips | tr -d '"' > {{ '{{.ENV}}' }}/public_ips.txt
-      - tofu -chdir=$TFDIR output control_plane_nodes_private_ips | tr -d '"' > {{ '{{.ENV}}' }}/private_ips.txt
+      - tofu -chdir=../terraform/{{ '{{.ENV}}' }} output control_plane_nodes_public_ips | sed 's/"//g; s/,/\n/g' > {{ '{{.ENV}}' }}/public_ips.txt
+      - tofu -chdir=../terraform/{{ '{{.ENV}}' }} output control_plane_nodes_private_ips | sed 's/"//g; s/,/\n/g' > {{ '{{.ENV}}' }}/private_ips.txt
 
   setup-ssh-key:
     desc: Extract and save SSH key from terraform output
     cmds:
-      - tofu -chdir={{ '{{.TFDIR}}' }} output -raw private_deploy_key > {{ '{{.SSH_KEY}}' }}
-      - chmod 600 $SSH_KEY
+      - tofu -chdir=../terraform/{{ '{{.ENV}}' }} output -raw private_deploy_key > {{ '{{.ENV}}' }}/id_ed25519
+      - chmod 600 {{ '{{.ENV}}' }}/id_ed25519
 
   ssh-server-node:
     vars:
@@ -40,7 +45,7 @@ tasks:
     requires:
       vars: [ENV]
     cmds:
-      - TERM=xterm-256color ssh -oStrictHostKeyChecking=no -i {{ '{{.SSH_KEY}}' }} ubuntu@{{ '{{.IP}}' }}
+      - TERM=xterm-256color ssh -oStrictHostKeyChecking=no -i {{ '{{.ENV}}' }}/id_ed25519 ubuntu@{{ '{{.IP}}' }}
 
   install-ecr-credential-helper:
     desc: |
@@ -55,12 +60,12 @@ tasks:
         for ip in $(echo "{{ '{{.NODE_IPS}}' }}"); do
           echo "Installing ECR credential helper on $ip..."
           # Download and install the ECR credential provider
-          ssh -oStrictHostKeyChecking=no -i {{ '{{.SSH_KEY}}' }} ubuntu@$ip \
+          ssh -oStrictHostKeyChecking=no -i {{ '{{.ENV}}' }}/id_ed25519 ubuntu@$ip \
             'sudo wget https://artifacts.k8s.io/binaries/cloud-provider-aws/v1.29.0/linux/amd64/ecr-credential-provider-linux-amd64 -O /usr/local/bin/ecr-credential-provider && \
              sudo chmod +x /usr/local/bin/ecr-credential-provider'
 
           # Create credential provider config
-          ssh -oStrictHostKeyChecking=no -i {{ '{{.SSH_KEY}}' }} ubuntu@$ip \
+          ssh -oStrictHostKeyChecking=no -i {{ '{{.ENV}}' }}/id_ed25519 ubuntu@$ip \
             'sudo mkdir -p /etc/rancher/k3s && \
              echo "apiVersion: kubelet.config.k8s.io/v1
         kind: CredentialProviderConfig
@@ -101,7 +106,7 @@ tasks:
         if [ "{{ '{{.NODE_COUNT}}' }}" -gt 1 ]; then
           CLUSTER_INIT="--cluster-init"
         fi
-        ssh -oStrictHostKeyChecking=no -i {{ '{{.SSH_KEY}}' }} \
+        ssh -oStrictHostKeyChecking=no -i {{ '{{.ENV}}' }}/id_ed25519 \
           ubuntu@{{ '{{.FIRST_PUBLIC_IP}}' }} \
           'curl -sfL https://get.k3s.io | K3S_TOKEN={{ '{{.K3S_TOKEN}}' }} \
           INSTALL_K3S_EXEC="server {{ '{{.CLUSTER_INIT}}' }} \
@@ -116,7 +121,7 @@ tasks:
         # Wait briefly then check k3s service status
         echo "Waiting 5s for k3s service to initialize on {{ '{{.FIRST_PUBLIC_IP}}' }}..."
         sleep 5
-        if ! ssh -oStrictHostKeyChecking=no -i {{ '{{.SSH_KEY}}' }} ubuntu@{{ '{{.FIRST_PUBLIC_IP}}' }} 'systemctl is-failed --quiet k3s'; then
+        if ! ssh -oStrictHostKeyChecking=no -i {{ '{{.ENV}}' }}/id_ed25519 ubuntu@{{ '{{.FIRST_PUBLIC_IP}}' }} 'systemctl is-failed --quiet k3s'; then
           echo "k3s service initialized successfully"
         else
           echo "k3s service failed to start properly"
@@ -131,7 +136,7 @@ tasks:
             PUBLIC_IP=$(echo "{{ '{{.OTHER_PUBLIC_IPS}}' }}" | sed -n "${i}p")
             PRIVATE_IP=$(echo "{{ '{{.OTHER_PRIVATE_IPS}}' }}" | sed -n "${i}p")
             echo "Installing $PUBLIC_IP..."
-            ssh -oStrictHostKeyChecking=no -i {{ '{{.SSH_KEY}}' }} ubuntu@$PUBLIC_IP \
+            ssh -oStrictHostKeyChecking=no -i {{ '{{.ENV}}' }}/id_ed25519 ubuntu@$PUBLIC_IP \
               'curl -sfL https://get.k3s.io | K3S_TOKEN={{ '{{.K3S_TOKEN}}' }} \
               INSTALL_K3S_EXEC="server --server https://{{ '{{.FIRST_PRIVATE_IP}}' }}:6443 \
               --tls-san {{ '{{.FIRST_PUBLIC_IP}}' }} --tls-san {{ '{{.FIRST_PRIVATE_IP}}' }} \
@@ -155,7 +160,7 @@ tasks:
         if [ -f {{ '{{.ENV}}' }}/kubeconfig ]; then
           cp {{ '{{.ENV}}' }}/kubeconfig {{ '{{.ENV}}' }}/kubeconfig.bak.$(date +%Y%m%d_%H%M%S)
         fi
-        scp -o StrictHostKeyChecking=no -i {{ '{{.SSH_KEY}}' }} ubuntu@{{ '{{.IP}}' }}:/etc/rancher/k3s/k3s.yaml {{ '{{.ENV}}' }}/kubeconfig
+        scp -o StrictHostKeyChecking=no -i {{ '{{.ENV}}' }}/id_ed25519 ubuntu@{{ '{{.IP}}' }}:/etc/rancher/k3s/k3s.yaml {{ '{{.ENV}}' }}/kubeconfig
       - sed -i'' -e "s/127.0.0.1/{{ '{{.IP}}' }}/g" {{ '{{.ENV}}' }}/kubeconfig
       - sed -i'' -e "s/default/{{copier__project_slug}}-{{ '{{.ENV}}' }}/g" {{ '{{.ENV}}' }}/kubeconfig
       - chmod 600 {{ '{{.ENV}}' }}/kubeconfig
@@ -167,10 +172,15 @@ tasks:
       vars: [ENV]
     cmds:
       - |
-        aws secretsmanager create-secret \
-          --name "{{ '{{.ENV}}' }}_kubeconfig" \
-          --secret-string "$(base64 -w0 $KUBECONFIG)"
-
+       if aws secretsmanager describe-secret --secret-id "{{copier__project_slug}}_{{ '{{.ENV}}' }}_kubeconfig" >/dev/null 2>&1; then
+          aws secretsmanager put-secret-value \
+            --secret-id "{{copier__project_slug}}_{{ '{{.ENV}}' }}_kubeconfig" \
+            --secret-string "$(base64 -w0 {{ '{{.ENV}}' }}/kubeconfig)" > /dev/null
+        else
+          aws secretsmanager create-secret \
+            --name "{{copier__project_slug}}_{{ '{{.ENV}}' }}_kubeconfig" \
+            --secret-string "$(base64 -w0 {{ '{{.ENV}}' }}/kubeconfig)" > /dev/null
+        fi
   delete-all-secrets:
     desc: |
       Delete all related secrets from AWS Secrets Manager.
@@ -179,8 +189,8 @@ tasks:
     cmds:
       - |
         aws secretsmanager delete-secret \
-          --secret-id "{{ '{{.ENV}}' }}_kubeconfig" \
-          --force-delete-without-recovery
+          --secret-id "{{copier__project_slug}}_{{ '{{.ENV}}' }}_kubeconfig" \
+          --force-delete-without-recovery > /dev/null 2>&1
 
   reset-config:
     desc: |
@@ -215,7 +225,7 @@ tasks:
       - |
         for ip in $(echo "{{ '{{.PUBLIC_IPS}}' }}"); do
           echo "Uninstalling k3s from $ip..."
-          ssh -oStrictHostKeyChecking=no -i {{ '{{.SSH_KEY}}' }} ubuntu@$ip \
+          ssh -oStrictHostKeyChecking=no -i {{ '{{.ENV}}' }}/id_ed25519 ubuntu@$ip \
             '/usr/local/bin/k3s-uninstall.sh'
         done
 
@@ -231,7 +241,7 @@ tasks:
           cp {{ '{{.ENV}}' }}/kubeconfig {{ '{{.ENV}}' }}/kubeconfig.bak.$(date +%Y%m%d_%H%M%S)
         fi
         aws secretsmanager get-secret-value \
-          --secret-id "{{ '{{.ENV}}' }}_kubeconfig" | \
+          --secret-id "{{copier__project_slug}}_{{ '{{.ENV}}' }}_kubeconfig" | \
           yq ".SecretString" | tr -d '"' | \
           base64 -d > ./{{ '{{.ENV}}' }}/kubeconfig
       - chmod 600 {{ '{{.ENV}}' }}/kubeconfig

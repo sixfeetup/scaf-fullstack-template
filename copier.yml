@@ -80,6 +80,15 @@ copier__domain_name:
       "Domain name cannot be empty."
     {% endif %}
 
+copier__existing_hosted_zone:
+  type: str
+  default: ""
+  help: "Enter the existing hosted zone name if you want to reuse one (e.g., domain.tld for subdomain.domain.tld projects). Leave empty to create a new hosted zone."
+  validator: >-
+    {% if copier__existing_hosted_zone.strip() and not copier__domain_name.endswith("." + copier__existing_hosted_zone) %}
+      "The domain name '{{ copier__domain_name }}' must be a subdomain of the hosted zone '{{ copier__existing_hosted_zone }}'"
+    {% endif %}
+
 copier__email:
   type: str
   default: "{{ copier__author_name.lower().replace(' ', '-') }}@{{ copier__domain_name }}"
