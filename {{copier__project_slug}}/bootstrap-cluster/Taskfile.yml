@@ -1,5 +1,5 @@
 version: '3'
-ars:
+vars:
   ENV: {{ "'{{.ENV}}'" }}
 
 includes:
