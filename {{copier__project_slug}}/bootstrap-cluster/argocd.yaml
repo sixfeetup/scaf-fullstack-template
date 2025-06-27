@@ -11,7 +11,7 @@ tasks:
     requires:
       vars: [ENV]
     cmds:
-      - op item create 
+      - op item create
           --category=ssh-key
           --title='{{ '{{.GITHUB_DEPLOY_KEY_TITLE}}' }}'
           --vault='{{ copier__project_name }}'
@@ -22,6 +22,8 @@ tasks:
     cmds:
       - task: install
         vars: {ENV: {{ "'{{.ENV}}'" }}, ARGOCD_VERSION: {{ "'{{.ARGOCD_VERSION}}'" }}}
+      - task: generate_github_deploy_key
+        vars: {ENV: '{{.ENV}}'}
       - task: create_repo_credentials_secret
         vars: {ENV: {{ "'{{.ENV}}'" }}}
       - task: bootstrap_root_app
