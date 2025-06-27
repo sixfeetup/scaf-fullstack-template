@@ -16,7 +16,8 @@ Find your cluster context (set your KUBECONFIG file if neccessary)
 
 Add your cluster to ArgoCD. This will also output the `CLUSTER_IP` you will use in the application.
 
-    $ argocd cluster add {{ copier__project_slug }}-ec2-cluster
+    $ argocd cluster add {{ copier__project_slug }}-environment
+ (replace environment with the actual environment name, e.g. `sandbox` or `production`)
 
 ### Creating the ArgoCD application manifests
 

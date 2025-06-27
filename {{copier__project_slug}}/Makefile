@@ -141,7 +141,7 @@ secrets:
 	@$(call check_var,ENVIRONMENT)
 	@echo "Creating sealed secrets for $$(kubectl config current-context) cluster"
 	kubectl config get-contexts --no-headers | \
-		grep {{ copier__project_dash }}-$(ENVIRONMENT) && kubectl config use-context admin@{{ copier__project_dash }}-$(ENVIRONMENT)
+		grep {{ copier__project_dash }}-$(ENVIRONMENT) && kubectl config use-context {{ copier__project_dash }}-$(ENVIRONMENT)
 	AWS_S3_ACCESS_KEY_ID=$$(tofu -chdir=./terraform/$(ENVIRONMENT) output -raw cnpg_user_access_key) \
 	AWS_S3_SECRET_ACCESS_KEY=$$(tofu -chdir=./terraform/$(ENVIRONMENT) output -raw cnpg_user_secret_key) \
 {% if copier__mail_service == "Amazon SES" %}	AWS_SES_ACCESS_KEY_ID=$$(tofu -chdir=./terraform/$(ENVIRONMENT) output -raw amazon_ses_user_key) \

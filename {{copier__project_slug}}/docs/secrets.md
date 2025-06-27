@@ -8,7 +8,10 @@ Creating a new secret involves encrypting the secret using kubeseal. [Installing
 Configure kubernetes to your current project config and context, making sure you are in the correct prod/sandbox environment
 
     $ export KUBECONFIG=~/.kube/config:~/.kube/{{ copier__project_slug }}.ec2.config
-    $ kubectl config use-context {{ copier__project_slug }}-ec2-cluster
+    $ kubectl config use-context {{ copier__project_slug }}-environment
+
+(replace environment with the actual environment name, e.g. `sandbox` or `production`)
+
 
 Add the secrets to your manifest using the secrets template file, and run kubeseal on the unencrypted values. The makefile target `sandbox-secrets` will replace the variables in `./k8s/templates/secrets.yaml.template` with the encoded variables from the environment, and copy the manifest with the encrypted values to `.k8s/overlays/sandbox/secrets.yaml`. The same can be done for the prod environment using the `prod-secrets` target
 
