@@ -57,5 +57,13 @@ module "control_plane_nodes" {
 {%- endif %}
 
   vpc_security_group_ids = [module.cluster_sg.security_group_id]
+
+  root_block_device = [
+    {
+      volume_type = "gp3"
+      volume_size = var.control_plane.disk_size
+    }
+  ]
+
 }
 

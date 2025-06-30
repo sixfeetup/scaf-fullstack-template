@@ -143,7 +143,7 @@ secrets:
 	kubectl config get-contexts --no-headers | \
 		grep -E "(admin@)?{{ copier__project_dash }}-$(ENVIRONMENT)" | \
 		head -1 | \
-		awk '{print $2}' | \
+		awk '{print $$2}' | \
 		xargs -r kubectl config use-context
 	AWS_S3_ACCESS_KEY_ID=$$(tofu -chdir=./terraform/$(ENVIRONMENT) output -raw cnpg_user_access_key) \
 	AWS_S3_SECRET_ACCESS_KEY=$$(tofu -chdir=./terraform/$(ENVIRONMENT) output -raw cnpg_user_secret_key) \
