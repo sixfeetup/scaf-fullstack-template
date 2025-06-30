@@ -12,6 +12,7 @@ module "cluster" {
     # 2 vCPUs, 4 GiB RAM, $0.0376 per Hour
     instance_type = "t3a.medium"
     num_instances = 1
+    disk_size     = 100  # Size in GB
     # NB!: set ami_id to prevent instance recreation when the latest ami
     # changes, eg:
     # ami_id = "ami-09d22b42af049d453"
