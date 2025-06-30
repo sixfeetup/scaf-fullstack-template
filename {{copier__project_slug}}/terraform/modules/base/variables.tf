@@ -75,6 +75,7 @@ variable "control_plane" {
     num_instances      = optional(number, 3)
     config_patch_files = optional(list(string), [])
     tags               = optional(map(string), {})
+    disk_size          = optional(number, 100)
   })
 
   validation {
