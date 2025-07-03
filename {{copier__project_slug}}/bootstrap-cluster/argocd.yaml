@@ -90,4 +90,7 @@ tasks:
     env:
       KUBECONFIG: "{{ '{{.ENV}}' }}/kubeconfig"
     cmds:
-      - cat root-app.template.yaml | envsubst | kubectl apply -f -
+      - |
+        export ENV="{{ '{{.ENV}}' }}" && \
+        export BRANCH="{{ '{{.BRANCH}}' }}" && \
+        cat root-app.template.yaml | envsubst | kubectl apply -f -
