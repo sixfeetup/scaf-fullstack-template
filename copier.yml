@@ -67,8 +67,8 @@ copier__author_name:
       "Backslashes ('\\') are not allowed in the author name."
     {% elif not copier__author_name.strip() %}
       "Author name cannot be empty."
-    {% elif not copier__author_name.replace(" ", "").isalpha() %}
-     "'{{ copier__author_name }}' should contain only alphabetic characters and spaces."
+    {% elif not copier__author_name.replace(" ", "").replace("-", "").replace("'", "").isalpha() %}
+      "'{{ copier__author_name }}' should contain only alphabetic characters, spaces, hyphens, and apostrophes."
     {% endif %}
 
 copier__domain_name:
