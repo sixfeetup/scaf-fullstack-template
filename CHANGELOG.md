@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.1.0](https://github.com/sixfeetup/scaf-fullstack-template/compare/v1.0.0...v1.1.0) (2025-07-09)
+
+### Features
+
+* relax python pin ([#97](https://github.com/sixfeetup/scaf-fullstack-template/issues/97)) ([ca8548e](https://github.com/sixfeetup/scaf-fullstack-template/commit/ca8548e05d87e70a4c6138735ba8decdf7468f81))
+
 ## 1.0.0 (2025-07-09)
 
 ### Features
