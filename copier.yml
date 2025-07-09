@@ -138,8 +138,8 @@ copier__aws_account_id:
 
 copier__create_nextjs_frontend:
   type: bool
-  default: true
-  help: "Do you want to create a Next.js frontend? (y/n) [default: Yes]"
+  default: false
+  help: "Do you want to create a Next.js frontend? (y/n) [default: No]"
 
 copier__mail_service:
   type: str
