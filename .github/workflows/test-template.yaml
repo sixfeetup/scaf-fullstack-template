@@ -19,5 +19,6 @@ jobs:
       - name: Test Template
         shell: bash
         run: |
+          echo "Installing template from $GITHUB_HEAD_REF"
           copier copy --trust --defaults --vcs-ref=$GITHUB_HEAD_REF \
           https://github.com/sixfeetup/scaf-fullstack-template.git test-project
