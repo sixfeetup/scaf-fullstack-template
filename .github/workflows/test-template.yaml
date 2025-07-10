@@ -1,0 +1,23 @@
+name: Test template
+
+on:
+  pull_request:
+
+jobs:
+  test-template:
+    runs-on: ubuntu-latest
+    environment: dev
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Copier
+        shell: bash
+        run: |
+          uv tool install copier
+
+      - name: Test Template
+        shell: bash
+        run: |
+          copier copy --defaults --vcs-ref=$GITHUB_HEAD_REF \
+          https://github.com/sixfeetup/scaf-fullstack-template.git test-project
