@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.1.2](https://github.com/sixfeetup/scaf-fullstack-template/compare/v1.1.1...v1.1.2) (2025-07-10)
+
+### Bug Fixes
+
+* exclude github workflow, README.md and scaf logo ([#107](https://github.com/sixfeetup/scaf-fullstack-template/issues/107)) ([2e033f4](https://github.com/sixfeetup/scaf-fullstack-template/commit/2e033f4c800c3e4853e7193245e5e2776aa230df))
+
 ## [1.1.1](https://github.com/sixfeetup/scaf-fullstack-template/compare/v1.1.0...v1.1.1) (2025-07-10)
 
 ### Bug Fixes
