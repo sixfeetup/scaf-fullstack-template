@@ -14,7 +14,7 @@ jobs:
       - name: Install Copier
         shell: bash
         run: |
-          uv tool install copier
+          pip install copier
 
       - name: Test Template
         shell: bash
