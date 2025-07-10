@@ -19,6 +19,7 @@ _exclude:
   - ".github/scaf-logo.png"
   - ".github/workflows/semantic-pull-request.yaml"
   - ".github/workflows/semantic-release.yaml"
+  - ".github/workflows/test-template.yaml"
 
 copier__project_name_raw:
   type: str
