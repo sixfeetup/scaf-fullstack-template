@@ -19,7 +19,7 @@ patches:
       value: ["--bind", "0.0.0.0", "--port", "8000", "--ping-interval", "15", "--ping-timeout", "5", "config.asgi:application"]
     - op: add
       path: /spec/template/spec/imagePullSecrets
-      value: 
+      value:
         - name: regcred
     - op: add
       path: /spec/template/spec/initContainers/0/env
@@ -60,18 +60,18 @@ patches:
 - patch: |-
     - op: add
       path: /spec/template/spec/imagePullSecrets
-      value: 
+      value:
         - name: regcred
   target:
     kind: Deployment
     name: frontend
 - patch: |-
-      - op: add
-        path: /data/DISTRIBUTION_ID
-        value: "CHANGEME"
-    target:
-      kind: ConfigMap
-      name: app-config{% endif %}
+    - op: add
+      path: /data/DISTRIBUTION_ID
+      value: "CHANGEME"
+  target:
+    kind: ConfigMap
+    name: app-config{% endif %}
 
 configMapGenerator:
   - name: app-config
