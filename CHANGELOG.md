@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.2.0](https://github.com/sixfeetup/scaf-fullstack-template/compare/v1.1.2...v1.2.0) (2025-07-10)
+
+### Features
+
+* github action to test template rendering ([#108](https://github.com/sixfeetup/scaf-fullstack-template/issues/108)) ([55a7823](https://github.com/sixfeetup/scaf-fullstack-template/commit/55a7823d0a75ce1506df99adf73b4b8f7a8d8a4a))
+
+### Documentation
+
+* remove duplicate changelog entries, fix typos ([#109](https://github.com/sixfeetup/scaf-fullstack-template/issues/109)) ([965a1da](https://github.com/sixfeetup/scaf-fullstack-template/commit/965a1dab2085cf4f23095f1d0a3e0a1c89433e82))
+
 ## [1.1.2](https://github.com/sixfeetup/scaf-fullstack-template/compare/v1.1.1...v1.1.2) (2025-07-10)
 
 ### Bug Fixes
