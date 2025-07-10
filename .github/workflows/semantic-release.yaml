@@ -25,6 +25,11 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.GA_DEPLOY_KEY }}
 
+      # use SSH url to ensure git commit using a deploy key bypasses the main
+      # branch protection rule
+      - name: Configure Git for SSH Push
+        run: git remote set-url origin "git@github.com:${{ github.repository }}.git"
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
