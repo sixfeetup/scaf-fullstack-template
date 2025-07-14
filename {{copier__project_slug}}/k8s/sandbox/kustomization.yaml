@@ -56,6 +56,51 @@ patches:
   target:
     kind: Deployment
     name: backend
+{%- if copier__use_celery %}
+- patch: |-
+    - op: add
+      path: /spec/template/spec/containers/0/env
+      value:
+        - name: POSTGRES_HOST
+          valueFrom:
+            secretKeyRef:
+              name: postgres-app
+              key: host
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: postgres-app
+              key: uri
+    - op: add
+      path: /spec/template/spec/containers/1/env
+      value:
+        - name: POSTGRES_HOST
+          valueFrom:
+            secretKeyRef:
+              name: postgres-app
+              key: host
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: postgres-app
+              key: uri
+    - op: add
+      path: /spec/template/spec/containers/2/env
+      value:
+        - name: POSTGRES_HOST
+          valueFrom:
+            secretKeyRef:
+              name: postgres-app
+              key: host
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: postgres-app
+              key: uri
+  target:
+    kind: Deployment
+    name: celery
+{%- endif %}
 {% if copier__create_nextjs_frontend %}
 - patch: |-
     - op: add
