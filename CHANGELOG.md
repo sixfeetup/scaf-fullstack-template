@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.2.1](https://github.com/sixfeetup/scaf-fullstack-template/compare/v1.2.0...v1.2.1) (2025-07-14)
+
+### Bug Fixes
+
+* set default CORS_ALLOWED_ORIGINS to [] ([#112](https://github.com/sixfeetup/scaf-fullstack-template/issues/112)) ([90a74b7](https://github.com/sixfeetup/scaf-fullstack-template/commit/90a74b73e50873dc6fef28b6563ee8d1b1bdfa13))
+
 ## [1.2.0](https://github.com/sixfeetup/scaf-fullstack-template/compare/v1.1.2...v1.2.0) (2025-07-10)
 
 ### Features
