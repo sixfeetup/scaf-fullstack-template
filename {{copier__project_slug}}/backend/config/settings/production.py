@@ -185,7 +185,7 @@ LOGGING = {
 {%- if copier__create_nextjs_frontend %}
 # ------------------------------------------------------------------------------
 # CORS settings
-CORS_ALLOWED_ORIGINS = env.list("CORS_ALLOWED_ORIGINS")
+CORS_ALLOWED_ORIGINS = env.list("CORS_ALLOWED_ORIGINS", default=[])
 {%- endif %}
 
 # Your stuff...
