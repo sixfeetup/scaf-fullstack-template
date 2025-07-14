@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.3.0](https://github.com/sixfeetup/scaf-fullstack-template/compare/v1.2.1...v1.3.0) (2025-07-14)
+
+### Features
+
+* add missing blocks ([#113](https://github.com/sixfeetup/scaf-fullstack-template/issues/113)) ([511287a](https://github.com/sixfeetup/scaf-fullstack-template/commit/511287abf66f04190d9d7834e8b63d367f54c7de))
+
 ## [1.2.1](https://github.com/sixfeetup/scaf-fullstack-template/compare/v1.2.0...v1.2.1) (2025-07-14)
 
 ### Bug Fixes
