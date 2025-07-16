@@ -5,7 +5,7 @@ metadata:
 spec:
   secretName: cluster-cert-tls
   issuerRef:
-    name: letsencrypt-staging
+    name: letsencrypt-prod
     kind: ClusterIssuer
   dnsNames:
     - api.sandbox.{{ copier__domain_name }}
