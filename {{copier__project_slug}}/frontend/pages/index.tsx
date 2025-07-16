@@ -18,7 +18,7 @@ export default function Home() {
   return (
     <>
       <h1>Home Page</h1>
-      <p>This page using Client Side Rendering to fetch User Info</p>
+      <p>This page is using Client Side Rendering to fetch User Info</p>
       {error ? <p>Error: {error.message}</p> : <p>{data?.me.name}</p>}
     </>
   )
