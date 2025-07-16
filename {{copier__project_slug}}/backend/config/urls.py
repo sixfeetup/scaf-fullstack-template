@@ -6,6 +6,7 @@ from django.urls import include, path
 from django.views import defaults as default_views
 from django.views.generic import TemplateView
 {%- if copier__create_nextjs_frontend %}
+from django.views.decorators.csrf import csrf_exempt
 from strawberry.django.views import GraphQLView
 from .schema import schema
 {%- endif %}
@@ -28,7 +29,7 @@ if settings.DEBUG:
 
 {%- if copier__create_nextjs_frontend %}
 urlpatterns += [
-    path("graphql/", GraphQLView.as_view(schema=schema)),
+    path("graphql/", csrf_exempt(GraphQLView.as_view(schema=schema))),
 ]
 {%- endif %}
 
