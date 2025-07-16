@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.4.0](https://github.com/sixfeetup/scaf-fullstack-template/compare/v1.3.0...v1.4.0) (2025-07-16)
+
+### Features
+
+* cors frontend issues ([#118](https://github.com/sixfeetup/scaf-fullstack-template/issues/118)) ([fc73a20](https://github.com/sixfeetup/scaf-fullstack-template/commit/fc73a201770a2f4f862e17b92313aa9125336120))
+
 ## [1.3.0](https://github.com/sixfeetup/scaf-fullstack-template/compare/v1.2.1...v1.3.0) (2025-07-14)
 
 ### Features
