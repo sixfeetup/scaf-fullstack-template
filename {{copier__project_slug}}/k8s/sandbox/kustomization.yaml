@@ -125,6 +125,8 @@ configMapGenerator:
      - ENVIRONMENT="sandbox"
      - DJANGO_SETTINGS_MODULE="config.settings.production"
      - DJANGO_CSRF_TRUSTED_ORIGINS="https://sandbox.{{ copier__domain_name }}"
+     - CORS_ALLOWED_ORIGINS="https://nextjs.{{ copier__domain_name }},https://sandbox.{{ copier__domain_name }}"
+     - CORS_ALLOW_CREDENTIALS=True
      - AWS_S3_CUSTOM_DOMAIN="sandbox.{{ copier__domain_name }}"
 
 images:

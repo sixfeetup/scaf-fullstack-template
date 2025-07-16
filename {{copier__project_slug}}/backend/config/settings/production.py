@@ -186,6 +186,7 @@ LOGGING = {
 # ------------------------------------------------------------------------------
 # CORS settings
 CORS_ALLOWED_ORIGINS = env.list("CORS_ALLOWED_ORIGINS", default=[])
+CORS_ALLOW_CREDENTIALS = env.bool("CORS_ALLOW_CREDENTIALS", default=False)
 {%- endif %}
 
 # Your stuff...

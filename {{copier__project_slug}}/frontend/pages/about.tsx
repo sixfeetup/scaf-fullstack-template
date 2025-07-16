@@ -11,7 +11,7 @@ export default function About() {
   return (
     <>
       <h1>About Page</h1>
-      <p>This page using Server Side Rendering to fetch User Info</p>
+      <p>This page is using Server Side Rendering to fetch User Info</p>
       {error ? <p>Error: {error.message}</p> : <p>{data?.me.name}</p>}{' '}
     </>
   )
