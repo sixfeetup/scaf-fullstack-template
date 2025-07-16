@@ -114,7 +114,7 @@ jobs:
           echo "SHORT_SHA=$SHORT_SHA" >> $GITHUB_ENV
           echo "BRANCH_NAME=$BRANCH_NAME" >> $GITHUB_ENV
           echo "TARGET_ENV=$TARGET_ENV" >> $GITHUB_ENV
-      
+
       - name: Set Backend ECR Repo
         run: |
           echo "ECR_REPO_BACKEND=${{ '{{ env.AWS_ACCOUNT_ID }}' }}.dkr.ecr.${{ '{{ env.AWS_REGION }}' }}.amazonaws.com/{{ copier__project_dash }}-$TARGET_ENV-backend" >> $GITHUB_ENV
@@ -163,10 +163,16 @@ jobs:
           export TARGET_ENV=$(if [ "$BRANCH_NAME" = "main" ]; then echo "prod"; else echo "sandbox"; fi)
           echo "TARGET_ENV=$TARGET_ENV" >> $GITHUB_ENV
 
+      - name: Set frontend environment variables
+        run: |
+          echo "NEXT_PUBLIC_API_URL=https://api.sandbox.{{ copier__domain_name }}/" >> ./frontend/.env
+          echo "NEXT_PUBLIC_GRAPHQL_ENDPOINT=https://api.sandbox.{{ copier__domain_name }}/graphql/" >> ./frontend/.env
+          echo "NEXT_GRAPHQL_ENDPOINT=https://api.sandbox.{{ copier__domain_name }}/graphql/" >> ./frontend/.env
+
       - name: Set Frontend ECR Repo
         run: |
           echo "ECR_REPO_FRONTEND=${{ '{{ env.AWS_ACCOUNT_ID }}' }}.dkr.ecr.${{ '{{ env.AWS_REGION }}' }}.amazonaws.com/{{ copier__project_dash }}-$TARGET_ENV-frontend" >> $GITHUB_ENV
-      
+
       - name: Build and push frontend image
         uses: docker/build-push-action@v5
         with:
