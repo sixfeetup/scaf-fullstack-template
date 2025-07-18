@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.4.1](https://github.com/sixfeetup/scaf-fullstack-template/compare/v1.4.0...v1.4.1) (2025-07-18)
+
+### Bug Fixes
+
+* only delete README.md and scaf-logo.png in repo root ([#111](https://github.com/sixfeetup/scaf-fullstack-template/issues/111)) ([8d63fd5](https://github.com/sixfeetup/scaf-fullstack-template/commit/8d63fd5c200d7df8f010fc3a3f33050a659905fd))
+
 ## [1.4.0](https://github.com/sixfeetup/scaf-fullstack-template/compare/v1.3.0...v1.4.0) (2025-07-16)
 
 ### Features
