@@ -15,10 +15,11 @@ _exclude:
   - ".DS_Store"
   - ".svn"
   - "*.test-data.yml"
-  - "README.md"
-  - "scaf-logo.png"
+  - ".github/README.md"
+  - ".github/scaf-logo.png"
   - ".github/workflows/semantic-pull-request.yaml"
   - ".github/workflows/semantic-release.yaml"
+  - ".github/workflows/test-template.yaml"
 
 copier__project_name_raw:
   type: str
