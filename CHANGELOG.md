@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.4.2](https://github.com/sixfeetup/scaf-fullstack-template/compare/v1.4.1...v1.4.2) (2025-07-22)
+
+### Bug Fixes
+
+* add field sets to add user ([#120](https://github.com/sixfeetup/scaf-fullstack-template/issues/120)) ([f893965](https://github.com/sixfeetup/scaf-fullstack-template/commit/f893965f65285775aa8bb070f201d150236842af))
+
 ## [1.4.1](https://github.com/sixfeetup/scaf-fullstack-template/compare/v1.4.0...v1.4.1) (2025-07-18)
 
 ### Bug Fixes
