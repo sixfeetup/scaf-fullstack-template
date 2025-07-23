@@ -2,24 +2,10 @@
 _templates_suffix: ""
 
 _tasks:
-  - cd {{ copier__project_slug }} && python ../tasks.py
+  - python tasks.py
   - rm tasks.py
 
-_exclude:
-  - "copier.yaml"
-  - "copier.yml"
-  - "~*"
-  - "*.py[co]"
-  - "__pycache__"
-  - ".git"
-  - ".DS_Store"
-  - ".svn"
-  - "*.test-data.yml"
-  - ".github/README.md"
-  - ".github/scaf-logo.png"
-  - ".github/workflows/semantic-pull-request.yaml"
-  - ".github/workflows/semantic-release.yaml"
-  - ".github/workflows/test-template.yaml"
+_subdirectory: template
 
 copier__project_name_raw:
   type: str
