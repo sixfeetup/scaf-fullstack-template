@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.5.0](https://github.com/sixfeetup/scaf-fullstack-template/compare/v1.4.2...v1.5.0) (2025-07-23)
+
+### Features
+
+* add nix flake ([#122](https://github.com/sixfeetup/scaf-fullstack-template/issues/122)) ([a110143](https://github.com/sixfeetup/scaf-fullstack-template/commit/a110143dd1604965c993e150419296095e49fb16))
+
+### Refactors
+
+* use _subdirectory directive to ignore non-template files ([#121](https://github.com/sixfeetup/scaf-fullstack-template/issues/121)) ([c537362](https://github.com/sixfeetup/scaf-fullstack-template/commit/c53736264347af2bba5b3e801883f05a85642d41))
+
 ## [1.4.2](https://github.com/sixfeetup/scaf-fullstack-template/compare/v1.4.1...v1.4.2) (2025-07-22)
 
 ### Bug Fixes
