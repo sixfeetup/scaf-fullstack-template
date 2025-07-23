@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.5.1](https://github.com/sixfeetup/scaf-fullstack-template/compare/v1.5.0...v1.5.1) (2025-07-23)
+
+### Bug Fixes
+
+* add argocd helm repo ([#123](https://github.com/sixfeetup/scaf-fullstack-template/issues/123)) ([1f8d59b](https://github.com/sixfeetup/scaf-fullstack-template/commit/1f8d59b4c32b8df9cf98fd2cdd6488da7d4d5c30))
+
 ## [1.5.0](https://github.com/sixfeetup/scaf-fullstack-template/compare/v1.4.2...v1.5.0) (2025-07-23)
 
 ### Features
