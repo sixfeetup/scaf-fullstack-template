@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.6.0](https://github.com/sixfeetup/scaf-fullstack-template/compare/v1.5.1...v1.6.0) (2025-07-24)
+
+### Features
+
+* **bootstrap:** improve robustness and automation ([#124](https://github.com/sixfeetup/scaf-fullstack-template/issues/124)) ([593f569](https://github.com/sixfeetup/scaf-fullstack-template/commit/593f569252d543d86b0241e511fe94fb100738e0))
+
 ## [1.5.1](https://github.com/sixfeetup/scaf-fullstack-template/compare/v1.5.0...v1.5.1) (2025-07-23)
 
 ### Bug Fixes
