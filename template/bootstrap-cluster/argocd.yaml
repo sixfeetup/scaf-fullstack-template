@@ -32,10 +32,10 @@ tasks:
     cmds:
       - |
         set -e
-        KEY_ID=$(gh repo deploy-key list | grep "$GITHUB_DEPLOY_KEY_TITLE" | cut -f3)
+        KEY_ID=$(gh repo deploy-key list | grep "$GITHUB_DEPLOY_KEY_TITLE" | cut -f1)
         if [ -n "$KEY_ID" ]; then
           echo "Deleting existing deploy key '$GITHUB_DEPLOY_KEY_TITLE'..."
-          gh repo deploy-key delete "$KEY_ID" --yes
+          gh repo deploy-key delete "$KEY_ID"
         fi
         TMP_DIR=$(mktemp -d)
         aws ssm get-parameter \
