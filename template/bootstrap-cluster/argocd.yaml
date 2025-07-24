@@ -58,6 +58,8 @@ tasks:
         vars: {ENV: {{ "'{{.ENV}}'" }}}
       - task: bootstrap_root_app
         vars: {ENV: {{ "'{{.ENV}}'" }}}
+      - task: monitor_sealed_secrets
+        vars: {ENV: {{ "'{{.ENV}}'" }}}
 
   install:
     desc: Deploy ArgoCD using Helm
@@ -126,3 +128,18 @@ tasks:
         export ENV="{{ '{{.ENV}}' }}" && \
         export BRANCH="{{ '{{.BRANCH}}' }}" && \
         cat root-app.template.yaml | envsubst | kubectl apply -f -
+
+  monitor_sealed_secrets:
+    desc: Monitor the cluster until the sealed secrets operator is installed
+    requires:
+      vars: [ENV]
+    env:
+      KUBECONFIG: "{{ '{{.ENV}}' }}/kubeconfig"
+    cmds:
+      - |
+        echo "Waiting for sealed-secrets-controller to be ready..."
+        until kubectl get pods -n kube-system -l app.kubernetes.io/name=sealed-secrets -o jsonpath='{.items[0].status.phase}' 2>/dev/null | grep -q "Running"; do
+          sleep 5
+        done
+        echo "sealed-secrets-controller is running."
+
