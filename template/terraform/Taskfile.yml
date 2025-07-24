@@ -13,6 +13,8 @@ tasks:
     vars:
       RESOURCE_NAME: "{{.RESOURCE_NAME}}"
       DIR: "{{.DIR}}"
+      APPLY_ARGS:
+        sh: if [ "{{.TERRAFORM_AUTO_APPROVE}}" = "1" ]; then echo "-auto-approve"; fi
     dir: "{{.DIR}}"
     cmds:
       - echo -e "{{.BLUE}}=== Deploying {{.RESOURCE_NAME}} resources ==={{.END}}"
@@ -28,7 +30,7 @@ tasks:
             exit 1
           fi
         fi
-      - tofu apply tfplan.out
+      - tofu apply {{.APPLY_ARGS}} tfplan.out
       - rm -f tfplan.out
 
   destroy-terraform:
@@ -39,6 +41,8 @@ tasks:
     vars:
       RESOURCE_NAME: "{{.RESOURCE_NAME}}"
       DIR: "{{.DIR}}"
+      APPLY_ARGS:
+        sh: if [ "{{.TERRAFORM_AUTO_APPROVE}}" = "1" ]; then echo "-auto-approve"; fi
     dir: "{{.DIR}}"
     cmds:
       - echo -e "{{.BLUE}}=== Planning destruction of {{.RESOURCE_NAME}} resources ==={{.END}}"
@@ -59,7 +63,7 @@ tasks:
           echo -e "{{.BLUE}}=== Cleaning S3 bucket before destroying bootstrap infrastructure ==={{.END}}"
           task clean-s3-bucket
         fi
-      - tofu apply tfplan.out
+      - tofu apply {{.APPLY_ARGS}} tfplan.out
       - rm -f tfplan.out
 
   # Deployment tasks

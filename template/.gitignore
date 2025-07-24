@@ -64,3 +64,6 @@ env
 *.tfstate.*
 *.tfvars
 *.tfvars.json
+
+# ignore .direnv
+.direnv/

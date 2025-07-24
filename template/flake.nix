@@ -31,10 +31,12 @@
             awscli2
             argocd
             bashInteractive
+            copier
             coreutils
             curl
             entr
             envsubst
+            gh
             gnumake
             gnused
             go

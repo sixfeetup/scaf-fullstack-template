@@ -7,15 +7,43 @@ env:
 tasks:
   generate_github_deploy_key:
     desc: |
-      Use the 1password CLI to generate a GitHub deploy key
+      Generate a GitHub deploy key and store it in AWS Parameter Store
     requires:
       vars: [ENV]
     cmds:
-      - op item create
-          --category=ssh-key
-          --title='{{ '{{.GITHUB_DEPLOY_KEY_TITLE}}' }}'
-          --vault='{{ copier__project_name }}'
-          --ssh-generate-key ed25519
+      - |
+        set -e
+        TMP_DIR=$(mktemp -d)
+        ssh-keygen -t ed25519 -f $TMP_DIR/id_ed25519 -q -N ""
+        aws ssm put-parameter \
+          --name "/{{ copier__project_name }}/{{ '{{.ENV}}' }}/argocd/github_deploy_key" \
+          --value "file://$TMP_DIR/id_ed25519" \
+          --type SecureString --overwrite
+        aws ssm put-parameter \
+          --name "/{{ copier__project_name }}/{{ '{{.ENV}}' }}/argocd/github_deploy_key.pub" \
+          --value "file://$TMP_DIR/id_ed25519.pub" \
+          --type String --overwrite
+        rm -rf $TMP_DIR
+
+  add_github_deploy_key:
+    desc: Add the public key to the GitHub repository as a deploy key
+    requires:
+      vars: [ENV]
+    cmds:
+      - |
+        set -e
+        KEY_ID=$(gh repo deploy-key list | grep "$GITHUB_DEPLOY_KEY_TITLE" | cut -f1)
+        if [ -n "$KEY_ID" ]; then
+          echo "Deleting existing deploy key '$GITHUB_DEPLOY_KEY_TITLE'..."
+          gh repo deploy-key delete "$KEY_ID"
+        fi
+        TMP_DIR=$(mktemp -d)
+        aws ssm get-parameter \
+          --name "/{{ copier__project_name }}/{{ '{{.ENV}}' }}/argocd/github_deploy_key.pub" \
+          --query Parameter.Value --output text > $TMP_DIR/id_ed25519.pub
+        echo "Adding new deploy key '$GITHUB_DEPLOY_KEY_TITLE'..."
+        gh repo deploy-key add $TMP_DIR/id_ed25519.pub --title "$GITHUB_DEPLOY_KEY_TITLE"
+        rm -rf $TMP_DIR
 
   bootstrap:
     desc: Setup ArgoCD
@@ -24,9 +52,17 @@ tasks:
         vars: {ENV: {{ "'{{.ENV}}'" }}, ARGOCD_VERSION: {{ "'{{.ARGOCD_VERSION}}'" }}}
       - task: generate_github_deploy_key
         vars: {ENV: {{ "'{{.ENV}}'" }}}
+      - task: add_github_deploy_key
+        vars: {ENV: {{ "'{{.ENV}}'" }}}
       - task: create_repo_credentials_secret
         vars: {ENV: {{ "'{{.ENV}}'" }}}
       - task: bootstrap_root_app
+        vars: {ENV: {{ "'{{.ENV}}'" }}}
+      - task: monitor_sealed_secrets
+        vars: {ENV: {{ "'{{.ENV}}'" }}}
+      - task: generate_sealed_secrets
+        vars: {ENV: {{ "'{{.ENV}}'" }}}
+      - task: commit_sealed_secrets
         vars: {ENV: {{ "'{{.ENV}}'" }}}
 
   install:
@@ -48,7 +84,7 @@ tasks:
       vars: [ENV]
     vars:
       GITHUB_DEPLOY_KEY_B64:
-        sh: op read "op://{{ copier__project_name }}/{{ '{{.GITHUB_DEPLOY_KEY_TITLE}}' }}/private key?ssh-format=openssh" | base64 -w0
+        sh: aws ssm get-parameter --name "/{{ copier__project_name }}/{{ '{{.ENV}}' }}/argocd/github_deploy_key" --with-decryption --query Parameter.Value --output text | base64 -w0
     desc: Create and apply repo credentials secret for each repo
     env:
       KUBECONFIG: "{{ '{{.ENV}}' }}/kubeconfig"
@@ -96,3 +132,41 @@ tasks:
         export ENV="{{ '{{.ENV}}' }}" && \
         export BRANCH="{{ '{{.BRANCH}}' }}" && \
         cat root-app.template.yaml | envsubst | kubectl apply -f -
+
+  monitor_sealed_secrets:
+    desc: Monitor the cluster until the sealed secrets operator is installed
+    requires:
+      vars: [ENV]
+    env:
+      KUBECONFIG: "{{ '{{.ENV}}' }}/kubeconfig"
+    cmds:
+      - |
+        echo "Waiting for sealed-secrets-controller to be ready..."
+        until kubectl get pods -n kube-system -l app.kubernetes.io/name=sealed-secrets -o jsonpath='{.items[0].status.phase}' 2>/dev/null | grep -q "Running"; do
+          sleep 5
+        done
+        echo "sealed-secrets-controller is running."
+
+  generate_sealed_secrets:
+    desc: Generate sealed secrets for the environment
+    requires:
+      vars: [ENV]
+    env:
+      KUBECONFIG: "{{ '{{.ENV}}' }}/kubeconfig"
+    cmds:
+      - |
+        AWS_S3_ACCESS_KEY_ID=$(tofu -chdir=../terraform/{{ '{{.ENV}}' }} output -raw cnpg_user_access_key) \
+        AWS_S3_SECRET_ACCESS_KEY=$(tofu -chdir=../terraform/{{ '{{.ENV}}' }} output -raw cnpg_user_secret_key) \
+        DJANGO_SECRET_KEY=$(LC_CTYPE=C tr -dc A-Za-z0-9 </dev/urandom | head -c 32; echo) \
+        ENVIRONMENT={{ '{{.ENV}}' }} \
+        envsubst < ../k8s/templates/secrets.yaml.template | kubeseal -n {{ copier__project_slug }}-{{ '{{.ENV}}' }} --format yaml > ../k8s/{{ '{{.ENV}}' }}/secrets.yaml
+
+  commit_sealed_secrets:
+    desc: Commit and push the sealed secrets
+    requires:
+      vars: [ENV]
+    cmds:
+      - |
+        git add ../k8s/{{ '{{.ENV}}' }}/secrets.yaml
+        git commit -m "feat(secrets): add sealed secrets for {{ '{{.ENV}}' }}"
+        git push
