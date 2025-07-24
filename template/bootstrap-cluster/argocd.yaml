@@ -13,14 +13,18 @@ tasks:
     cmds:
       - |
         set -e
+        PARAM_PREFIX="/{{ copier__project_slug }}"
+        if [ -n "{{ '{{.ENV}}' }}" ]; then
+          PARAM_PREFIX="$PARAM_PREFIX/{{ '{{.ENV}}' }}"
+        fi
         TMP_DIR=$(mktemp -d)
         ssh-keygen -t ed25519 -f $TMP_DIR/id_ed25519 -q -N ""
         aws ssm put-parameter \
-          --name "/{{ copier__project_slug }}/{{ '{{.ENV}}' }}/argocd/github_deploy_key" \
+          --name "$PARAM_PREFIX/argocd/github_deploy_key" \
           --value "file://$TMP_DIR/id_ed25519" \
           --type SecureString --overwrite
         aws ssm put-parameter \
-          --name "/{{ copier__project_slug }}/{{ '{{.ENV}}' }}/argocd/github_deploy_key.pub" \
+          --name "$PARAM_PREFIX/argocd/github_deploy_key.pub" \
           --value "file://$TMP_DIR/id_ed25519.pub" \
           --type String --overwrite
         rm -rf $TMP_DIR
@@ -32,6 +36,10 @@ tasks:
     cmds:
       - |
         set -e
+        PARAM_PREFIX="/{{ copier__project_slug }}"
+        if [ -n "{{ '{{.ENV}}' }}" ]; then
+          PARAM_PREFIX="$PARAM_PREFIX/{{ '{{.ENV}}' }}"
+        fi
         KEY_ID=$(gh repo deploy-key list | grep "$GITHUB_DEPLOY_KEY_TITLE" | cut -f1)
         if [ -n "$KEY_ID" ]; then
           echo "Deleting existing deploy key '$GITHUB_DEPLOY_KEY_TITLE'..."
@@ -39,7 +47,7 @@ tasks:
         fi
         TMP_DIR=$(mktemp -d)
         aws ssm get-parameter \
-          --name "/{{ copier__project_slug }}/{{ '{{.ENV}}' }}/argocd/github_deploy_key.pub" \
+          --name "$PARAM_PREFIX/argocd/github_deploy_key.pub" \
           --query Parameter.Value --output text > $TMP_DIR/id_ed25519.pub
         echo "Adding new deploy key '$GITHUB_DEPLOY_KEY_TITLE'..."
         gh repo deploy-key add $TMP_DIR/id_ed25519.pub --title "$GITHUB_DEPLOY_KEY_TITLE"
@@ -84,7 +92,12 @@ tasks:
       vars: [ENV]
     vars:
       GITHUB_DEPLOY_KEY_B64:
-        sh: aws ssm get-parameter --name "/{{ copier__project_slug }}/{{ '{{.ENV}}' }}/argocd/github_deploy_key" --with-decryption --query Parameter.Value --output text | base64 -w0
+        sh: |
+          PARAM_PREFIX="/{{ copier__project_slug }}"
+          if [ -n "{{ '{{.ENV}}' }}" ]; then
+            PARAM_PREFIX="$PARAM_PREFIX/{{ '{{.ENV}}' }}"
+          fi
+          aws ssm get-parameter --name "$PARAM_PREFIX/argocd/github_deploy_key" --with-decryption --query Parameter.Value --output text | base64 -w0
     desc: Create and apply repo credentials secret for each repo
     env:
       KUBECONFIG: "{{ '{{.ENV}}' }}/kubeconfig"
