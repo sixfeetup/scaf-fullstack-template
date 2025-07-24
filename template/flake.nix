@@ -64,7 +64,6 @@
             echo "{{ copier__project_name }} dev environment shell hook"
             export LC_ALL=en_US.UTF-8
             export LANG=en_US.UTF-8
-            pre-commit install
           '';
         };
       }
