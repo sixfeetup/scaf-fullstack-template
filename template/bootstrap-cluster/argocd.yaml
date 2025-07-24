@@ -36,7 +36,7 @@ tasks:
         aws ssm get-parameter \
           --name "/{{ copier__project_name }}/{{ '{{.ENV}}' }}/argocd/github_deploy_key.pub" \
           --query Parameter.Value --output text > $TMP_DIR/id_ed25519.pub
-        gh repo deploy-key add $TMP_DIR/id_ed25519.pub --title "$GITHUB_DEPLOY_KEY_TITLE" --allow-read-write
+        gh repo deploy-key add $TMP_DIR/id_ed25519.pub --title "$GITHUB_DEPLOY_KEY_TITLE"
         rm -rf $TMP_DIR
 
   bootstrap:
