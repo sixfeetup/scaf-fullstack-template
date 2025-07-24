@@ -166,6 +166,7 @@ tasks:
     requires:
       vars: [ENV]
     cmds:
-      - git add ../k8s/{{ '{{.ENV}}' }}/secrets.yaml
-      - git commit -m "feat(secrets): add sealed secrets for {{ '{{.ENV}}' }}"
-      - git push
+      - |
+        git add ../k8s/{{ '{{.ENV}}' }}/secrets.yaml
+        git commit -m "feat(secrets): add sealed secrets for {{ '{{.ENV}}' }}"
+        git push
