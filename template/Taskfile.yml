@@ -16,6 +16,8 @@ includes:
 vars:
 {% endraw %}
   PROJECT_SLUG: "{{ copier__project_dash }}"
+  AWS_REGION: "{{ copier__aws_region }}"
+  AWS_ACCOUNT_ID: "{{ copier__aws_account_id }}"
 {% raw %}
   TERRAFORM_STATE_BUCKET: "{{.PROJECT_SLUG}}-terraform-state"
   ARGOCD_VERSION: "{{.ARGOCD_VERSION}}"
@@ -25,6 +27,12 @@ vars:
   YELLOW: '\033[0;33m'
   RED: '\033[0;31m'
   END: '\033[0m'
+
+  set-github-variables:
+    desc: Set GitHub repository variables for AWS credentials
+    cmds:
+      - gh variable set AWS_REGION --body "{{.AWS_REGION}}"
+      - gh variable set AWS_ACCOUNT_ID --body "{{.AWS_ACCOUNT_ID}}"
 
 tasks:
   # Configuration tasks
