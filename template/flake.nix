@@ -35,6 +35,7 @@
             curl
             entr
             envsubst
+            gh
             gnumake
             gnused
             go
