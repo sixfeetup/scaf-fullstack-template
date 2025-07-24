@@ -60,6 +60,8 @@ tasks:
         vars: {ENV: {{ "'{{.ENV}}'" }}}
       - task: monitor_sealed_secrets
         vars: {ENV: {{ "'{{.ENV}}'" }}}
+      - task: generate_sealed_secrets
+        vars: {ENV: {{ "'{{.ENV}}'" }}}
 
   install:
     desc: Deploy ArgoCD using Helm
@@ -143,3 +145,16 @@ tasks:
         done
         echo "sealed-secrets-controller is running."
 
+  generate_sealed_secrets:
+    desc: Generate sealed secrets for the environment
+    requires:
+      vars: [ENV]
+    env:
+      KUBECONFIG: "{{ '{{.ENV}}' }}/kubeconfig"
+    cmds:
+      - |
+        AWS_S3_ACCESS_KEY_ID=$(tofu -chdir=../terraform/{{ '{{.ENV}}' }} output -raw cnpg_user_access_key) \
+        AWS_S3_SECRET_ACCESS_KEY=$(tofu -chdir=../terraform/{{ '{{.ENV}}' }} output -raw cnpg_user_secret_key) \
+        DJANGO_SECRET_KEY=$(LC_CTYPE=C tr -dc A-Za-z0-9 </dev/urandom | head -c 32; echo) \
+        ENVIRONMENT={{ '{{.ENV}}' }} \
+        envsubst < ../k8s/templates/secrets.yaml.template | kubeseal -n {{ copier__project_slug }}-{{ '{{.ENV}}' }} --format yaml > ../k8s/{{ '{{.ENV}}' }}/secrets.yaml
