@@ -62,6 +62,8 @@ tasks:
         vars: {ENV: {{ "'{{.ENV}}'" }}}
       - task: generate_sealed_secrets
         vars: {ENV: {{ "'{{.ENV}}'" }}}
+      - task: commit_sealed_secrets
+        vars: {ENV: {{ "'{{.ENV}}'" }}}
 
   install:
     desc: Deploy ArgoCD using Helm
@@ -158,3 +160,12 @@ tasks:
         DJANGO_SECRET_KEY=$(LC_CTYPE=C tr -dc A-Za-z0-9 </dev/urandom | head -c 32; echo) \
         ENVIRONMENT={{ '{{.ENV}}' }} \
         envsubst < ../k8s/templates/secrets.yaml.template | kubeseal -n {{ copier__project_slug }}-{{ '{{.ENV}}' }} --format yaml > ../k8s/{{ '{{.ENV}}' }}/secrets.yaml
+
+  commit_sealed_secrets:
+    desc: Commit and push the sealed secrets
+    requires:
+      vars: [ENV]
+    cmds:
+      - git add ../k8s/{{ '{{.ENV}}' }}/secrets.yaml
+      - git commit -m "feat(secrets): add sealed secrets for {{ '{{.ENV}}' }}"
+      - git push
