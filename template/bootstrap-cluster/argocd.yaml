@@ -32,16 +32,18 @@ tasks:
     cmds:
       - |
         set -e
-        if ! gh repo deploy-key list | grep -q "$GITHUB_DEPLOY_KEY_TITLE"; then
-          TMP_DIR=$(mktemp -d)
-          aws ssm get-parameter \
-            --name "/{{ copier__project_name }}/{{ '{{.ENV}}' }}/argocd/github_deploy_key.pub" \
-            --query Parameter.Value --output text > $TMP_DIR/id_ed25519.pub
-          gh repo deploy-key add $TMP_DIR/id_ed25519.pub --title "$GITHUB_DEPLOY_KEY_TITLE"
-          rm -rf $TMP_DIR
-        else
-          echo "Deploy key '$GITHUB_DEPLOY_KEY_TITLE' already exists."
+        KEY_ID=$(gh repo deploy-key list | grep "$GITHUB_DEPLOY_KEY_TITLE" | cut -f3)
+        if [ -n "$KEY_ID" ]; then
+          echo "Deleting existing deploy key '$GITHUB_DEPLOY_KEY_TITLE'..."
+          gh repo deploy-key delete "$KEY_ID" --yes
         fi
+        TMP_DIR=$(mktemp -d)
+        aws ssm get-parameter \
+          --name "/{{ copier__project_name }}/{{ '{{.ENV}}' }}/argocd/github_deploy_key.pub" \
+          --query Parameter.Value --output text > $TMP_DIR/id_ed25519.pub
+        echo "Adding new deploy key '$GITHUB_DEPLOY_KEY_TITLE'..."
+        gh repo deploy-key add $TMP_DIR/id_ed25519.pub --title "$GITHUB_DEPLOY_KEY_TITLE"
+        rm -rf $TMP_DIR
 
   bootstrap:
     desc: Setup ArgoCD
