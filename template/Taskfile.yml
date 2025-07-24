@@ -28,13 +28,13 @@ vars:
   RED: '\033[0;31m'
   END: '\033[0m'
 
+tasks:
   set-github-variables:
     desc: Set GitHub repository variables for AWS credentials
     cmds:
       - gh variable set AWS_REGION --body "{{.AWS_REGION}}"
       - gh variable set AWS_ACCOUNT_ID --body "{{.AWS_ACCOUNT_ID}}"
 
-tasks:
   # Configuration tasks
   establish-aws-login:
     desc: Establish AWS login (check if logged in, login if needed)
