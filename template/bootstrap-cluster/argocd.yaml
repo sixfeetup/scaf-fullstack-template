@@ -7,15 +7,23 @@ env:
 tasks:
   generate_github_deploy_key:
     desc: |
-      Use the 1password CLI to generate a GitHub deploy key
+      Generate a GitHub deploy key and store it in AWS Parameter Store
     requires:
       vars: [ENV]
     cmds:
-      - op item create
-          --category=ssh-key
-          --title='{{ '{{.GITHUB_DEPLOY_KEY_TITLE}}' }}'
-          --vault='{{ copier__project_name }}'
-          --ssh-generate-key ed25519
+      - |
+        set -e
+        TMP_DIR=$(mktemp -d)
+        ssh-keygen -t ed25519 -f $TMP_DIR/id_ed25519 -q -N ""
+        aws ssm put-parameter \
+          --name "/{{ copier__project_name }}/{{ '{{.ENV}}' }}/argocd/github_deploy_key" \
+          --value "file://$TMP_DIR/id_ed25519" \
+          --type SecureString --overwrite
+        aws ssm put-parameter \
+          --name "/{{ copier__project_name }}/{{ '{{.ENV}}' }}/argocd/github_deploy_key.pub" \
+          --value "file://$TMP_DIR/id_ed25519.pub" \
+          --type String --overwrite
+        rm -rf $TMP_DIR
 
   bootstrap:
     desc: Setup ArgoCD
@@ -48,7 +56,7 @@ tasks:
       vars: [ENV]
     vars:
       GITHUB_DEPLOY_KEY_B64:
-        sh: op read "op://{{ copier__project_name }}/{{ '{{.GITHUB_DEPLOY_KEY_TITLE}}' }}/private key?ssh-format=openssh" | base64 -w0
+        sh: aws ssm get-parameter --name "/{{ copier__project_name }}/{{ '{{.ENV}}' }}/argocd/github_deploy_key" --with-decryption --query Parameter.Value --output text | base64 -w0
     desc: Create and apply repo credentials secret for each repo
     env:
       KUBECONFIG: "{{ '{{.ENV}}' }}/kubeconfig"
