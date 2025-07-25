@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.7.1](https://github.com/sixfeetup/scaf-fullstack-template/compare/v1.7.0...v1.7.1) (2025-07-25)
+
+### Bug Fixes
+
+* **argocd:** make sealed-secrets check more robust ([#127](https://github.com/sixfeetup/scaf-fullstack-template/issues/127)) ([87c3fe5](https://github.com/sixfeetup/scaf-fullstack-template/commit/87c3fe54a242bde00fd00e14ed25a34c14374807))
+
 ## [1.7.0](https://github.com/sixfeetup/scaf-fullstack-template/compare/v1.6.1...v1.7.0) (2025-07-25)
 
 ### Features
