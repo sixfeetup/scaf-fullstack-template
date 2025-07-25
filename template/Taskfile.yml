@@ -131,6 +131,19 @@ tasks:
       - task: bootstrap-cluster:argocd:bootstrap
         vars: {ENV: '{{.ENV}}'}
 
+  delete-ecr-images:
+    desc: Delete all images from ECR repositories for an environment
+    requires:
+      vars: [ENV]
+    cmds:
+      - |
+        set -e
+        REPOS=$(tofu -chdir=./terraform/{{.ENV}} output -json | jq -r 'to_entries[] | select(.key | endswith("_ecr_repo")) | .value.value | select(. != null)')
+        for REPO in $REPOS; do
+          echo "Deleting images from $REPO..."
+          aws ecr batch-delete-image --repository-name $REPO --image-ids "$(aws ecr list-images --repository-name $REPO --query 'imageIds[*]' --output json)" --no-dry-run || true
+        done
+
   commit-changes:
     desc: Commit any changed files
     cmds:
@@ -246,6 +259,8 @@ tasks:
     silent: true
     cmds:
       - task: establish-aws-login
+      - task: delete-ecr-images
+        vars: {ENV: sandbox}
       - task: teardown-environment
         vars: {ENV: sandbox}
 

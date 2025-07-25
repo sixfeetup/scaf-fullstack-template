@@ -54,3 +54,13 @@ output "cloudfront_domain_name" {
   description = "The CloudFront distribution domain name"
   value       = module.cluster.cloudfront_domain_name
 }
+{% if copier__create_nextjs_frontend %}
+output "frontend_ecr_repo" {
+  description = "The Frontend ECR repository"
+  value       = module.cluster.frontend_ecr_repo
+}
+{% endif %}
+output "backend_ecr_repo" {
+  description = "The Backend ECR repository"
+  value       = module.cluster.backend_ecr_repo
+}
