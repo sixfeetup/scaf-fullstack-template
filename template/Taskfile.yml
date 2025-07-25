@@ -122,6 +122,7 @@ tasks:
         vars: {ENV: '{{.ENV}}'}
       - task: terraform:deploy-bootstrap-dir
       - task: terraform:deploy-github-dir
+      - task: set-github-variables
       - task: terraform:deploy-environment-dir
         vars: {ENV: '{{.ENV}}'}
       - task: commit-changes
