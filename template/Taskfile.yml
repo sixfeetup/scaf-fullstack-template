@@ -147,8 +147,9 @@ tasks:
   commit-changes:
     desc: Commit any changed files
     cmds:
-      - git add .
-      - git commit -m "feat(ci): update generated files"
+      - |
+        git add .
+        git commit -m "feat(ci): update generated files"
 
   validate-environment:
     desc: Validate that environment is sandbox or production
