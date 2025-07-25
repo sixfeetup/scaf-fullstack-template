@@ -140,6 +140,7 @@ tasks:
     desc: Delete all images from ECR repositories for an environment
     requires:
       vars: [ENV]
+    prompt: "WARNING: This will permanently delete all container images in the ECR repositories for the '{{.ENV}}' environment.\nAre you sure you want to continue? Type 'yes' to confirm: "
     cmds:
       - |
         set -e

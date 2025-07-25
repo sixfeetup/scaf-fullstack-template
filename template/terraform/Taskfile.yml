@@ -22,7 +22,7 @@ tasks:
       - tofu plan -out=tfplan.out && tofu show -no-color tfplan.out >> .terraform/tfplan-$(date +%Y%m%d-%H%M%S).log
       - |
         if [ "{{.TERRAFORM_AUTO_APPROVE}}" != "1" ]; then
-          echo "{{.YELLOW}}Review the plan for {{.RESOURCE_NAME}}.{{.END}}"
+          echo -e "{{.YELLOW}}Review the plan for {{.RESOURCE_NAME}}.{{.END}}"
           read -p "Do you want to apply this plan? Type 'yes' to confirm: " confirm
           if [ "$confirm" != "yes" ]; then
             echo -e "{{.RED}}Deployment of {{.RESOURCE_NAME}} cancelled.{{.END}}"
@@ -50,7 +50,7 @@ tasks:
       - tofu plan -destroy -out=tfplan.out && tofu show -no-color tfplan.out >> .terraform/tfplan-$(date +%Y%m%d-%H%M%S).log
       - |
         if [ "{{.TERRAFORM_AUTO_APPROVE}}" != "1" ]; then
-          echo "{{.YELLOW}}Review the destruction plan for {{.RESOURCE_NAME}}.{{.END}}"
+          echo -e "{{.YELLOW}}Review the destruction plan for {{.RESOURCE_NAME}}.{{.END}}"
           read -p "Do you want to apply this plan? Type 'yes' to confirm: " confirm
           if [ "$confirm" != "yes" ]; then
             echo -e "{{.RED}}Destruction of {{.RESOURCE_NAME}} cancelled.{{.END}}"
