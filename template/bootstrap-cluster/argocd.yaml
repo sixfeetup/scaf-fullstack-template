@@ -161,7 +161,7 @@ tasks:
         AWS_S3_SECRET_ACCESS_KEY=$(tofu -chdir=../terraform/{{ '{{.ENV}}' }} output -raw cnpg_user_secret_key) \
         DJANGO_SECRET_KEY=$(LC_CTYPE=C tr -dc A-Za-z0-9 </dev/urandom | head -c 32; echo) \
         ENVIRONMENT={{ '{{.ENV}}' }} \
-        envsubst < ../k8s/templates/secrets.yaml.template | kubeseal -n {{ copier__project_slug }}-{{ '{{.ENV}}' }} --format yaml > ../k8s/{{ '{{.ENV}}' }}/secrets.yaml
+        envsubst < ../k8s/templates/secrets.yaml.template | kubeseal -n {{ copier__rfc1123_subdomain }}-{{ '{{.ENV}}' }} --format yaml > ../k8s/{{ '{{.ENV}}' }}/secrets.yaml
 
   commit_sealed_secrets:
     desc: Commit and push the sealed secrets
