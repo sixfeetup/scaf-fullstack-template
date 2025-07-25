@@ -119,6 +119,7 @@ tasks:
       - task: terraform:deploy-github-dir
       - task: terraform:deploy-environment-dir
         vars: {ENV: '{{.ENV}}'}
+      - task: commit-changes
 {% endraw %}
       {%- if copier__operating_system == "talos" %}
       - task: bootstrap-cluster:talos:bootstrap # todo: add talos alternative
@@ -129,6 +130,12 @@ tasks:
         vars: {ENV: '{{.ENV}}'}
       - task: bootstrap-cluster:argocd:bootstrap
         vars: {ENV: '{{.ENV}}'}
+
+  commit-changes:
+    desc: Commit any changed files
+    cmds:
+      - git add .
+      - git commit -m "feat(ci): update generated files"
 
   validate-environment:
     desc: Validate that environment is sandbox or production
