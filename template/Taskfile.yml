@@ -22,11 +22,16 @@ vars:
   TERRAFORM_STATE_BUCKET: "{{.PROJECT_SLUG}}-terraform-state"
   ARGOCD_VERSION: "{{.ARGOCD_VERSION}}"
   TERRAFORM_AUTO_APPROVE: "{{.TERRAFORM_AUTO_APPROVE}}"
-  BLUE: '\033[0;36m'
-  GREEN: '\033[0;32m'
-  YELLOW: '\033[0;33m'
-  RED: '\033[0;31m'
-  END: '\033[0m'
+  BLUE:
+    sh: echo "\033[0;36m"
+  GREEN:
+    sh: echo "\033[0;32m"
+  YELLOW:
+    sh: echo "\033[0;33m"
+  RED:
+    sh: echo "\033[0;31m"
+  END:
+    sh: echo "\033[0m"
 
 tasks:
   set-github-variables:
@@ -117,8 +122,10 @@ tasks:
         vars: {ENV: '{{.ENV}}'}
       - task: terraform:deploy-bootstrap-dir
       - task: terraform:deploy-github-dir
+      - task: set-github-variables
       - task: terraform:deploy-environment-dir
         vars: {ENV: '{{.ENV}}'}
+      - task: commit-changes
 {% endraw %}
       {%- if copier__operating_system == "talos" %}
       - task: bootstrap-cluster:talos:bootstrap # todo: add talos alternative
@@ -129,6 +136,34 @@ tasks:
         vars: {ENV: '{{.ENV}}'}
       - task: bootstrap-cluster:argocd:bootstrap
         vars: {ENV: '{{.ENV}}'}
+
+  delete-ecr-images:
+    desc: Delete all images from ECR repositories for an environment
+    requires:
+      vars: [ENV]
+    prompt: "WARNING: This will permanently delete all container images in the ECR repositories for the '{{.ENV}}' environment.\nAre you sure you want to continue? Type 'yes' to confirm: "
+    cmds:
+      - |
+        set -e
+        REPO_URLS=$(tofu -chdir=./terraform/{{.ENV}} output -json | jq -r 'to_entries[] | select(.key | endswith("_ecr_repo")) | .value.value | select(. != null)')
+        for REPO_URL in $REPO_URLS; do
+          REPO_NAME=$(basename "$REPO_URL")
+          echo "Checking repository: $REPO_NAME"
+          IMAGE_IDS=$(aws ecr list-images --repository-name "$REPO_NAME" --query 'imageIds[*]' --output json)
+          if [ -n "$IMAGE_IDS" ] && [ "$IMAGE_IDS" != "[]" ]; then
+            echo "Deleting images from $REPO_NAME..."
+            aws ecr batch-delete-image --repository-name "$REPO_NAME" --image-ids "$IMAGE_IDS" >/dev/null
+          else
+            echo "No images to delete in $REPO_NAME."
+          fi
+        done
+
+  commit-changes:
+    desc: Commit any changed files
+    cmds:
+      - |
+        git add .
+        git commit -m "feat(ci): update generated files"
 
   validate-environment:
     desc: Validate that environment is sandbox or production
@@ -239,6 +274,8 @@ tasks:
     silent: true
     cmds:
       - task: establish-aws-login
+      - task: delete-ecr-images
+        vars: {ENV: sandbox}
       - task: teardown-environment
         vars: {ENV: sandbox}
 

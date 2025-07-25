@@ -16,11 +16,11 @@ tasks:
         TMP_DIR=$(mktemp -d)
         ssh-keygen -t ed25519 -f $TMP_DIR/id_ed25519 -q -N ""
         aws ssm put-parameter \
-          --name "/{{ copier__project_name }}/{{ '{{.ENV}}' }}/argocd/github_deploy_key" \
+          --name "/{{ copier__project_slug }}/{{ '{{.ENV}}' }}/argocd/github_deploy_key" \
           --value "file://$TMP_DIR/id_ed25519" \
           --type SecureString --overwrite
         aws ssm put-parameter \
-          --name "/{{ copier__project_name }}/{{ '{{.ENV}}' }}/argocd/github_deploy_key.pub" \
+          --name "/{{ copier__project_slug }}/{{ '{{.ENV}}' }}/argocd/github_deploy_key.pub" \
           --value "file://$TMP_DIR/id_ed25519.pub" \
           --type String --overwrite
         rm -rf $TMP_DIR
@@ -39,7 +39,7 @@ tasks:
         fi
         TMP_DIR=$(mktemp -d)
         aws ssm get-parameter \
-          --name "/{{ copier__project_name }}/{{ '{{.ENV}}' }}/argocd/github_deploy_key.pub" \
+          --name "/{{ copier__project_slug }}/{{ '{{.ENV}}' }}/argocd/github_deploy_key.pub" \
           --query Parameter.Value --output text > $TMP_DIR/id_ed25519.pub
         echo "Adding new deploy key '$GITHUB_DEPLOY_KEY_TITLE'..."
         gh repo deploy-key add $TMP_DIR/id_ed25519.pub --title "$GITHUB_DEPLOY_KEY_TITLE"
@@ -47,6 +47,8 @@ tasks:
 
   bootstrap:
     desc: Setup ArgoCD
+    requires:
+      vars: [ENV]
     cmds:
       - task: install
         vars: {ENV: {{ "'{{.ENV}}'" }}, ARGOCD_VERSION: {{ "'{{.ARGOCD_VERSION}}'" }}}
@@ -84,7 +86,7 @@ tasks:
       vars: [ENV]
     vars:
       GITHUB_DEPLOY_KEY_B64:
-        sh: aws ssm get-parameter --name "/{{ copier__project_name }}/{{ '{{.ENV}}' }}/argocd/github_deploy_key" --with-decryption --query Parameter.Value --output text | base64 -w0
+        sh: aws ssm get-parameter --name "/{{ copier__project_slug }}/{{ '{{.ENV}}' }}/argocd/github_deploy_key" --with-decryption --query Parameter.Value --output text | base64 -w0
     desc: Create and apply repo credentials secret for each repo
     env:
       KUBECONFIG: "{{ '{{.ENV}}' }}/kubeconfig"
@@ -142,10 +144,12 @@ tasks:
     cmds:
       - |
         echo "Waiting for sealed-secrets-controller to be ready..."
-        until kubectl get pods -n kube-system -l app.kubernetes.io/name=sealed-secrets -o jsonpath='{.items[0].status.phase}' 2>/dev/null | grep -q "Running"; do
+        kubectl wait --for=condition=ready pod -n kube-system -l app.kubernetes.io/name=sealed-secrets --timeout=120s
+        echo "Waiting for sealed-secrets-controller service to be available..."
+        until kubectl get endpoints -n kube-system sealed-secrets-controller -o jsonpath='{.subsets[?(@.addresses)].addresses[0].ip}' 2>/dev/null; do
           sleep 5
         done
-        echo "sealed-secrets-controller is running."
+        echo "sealed-secrets-controller is ready."
 
   generate_sealed_secrets:
     desc: Generate sealed secrets for the environment
@@ -159,7 +163,7 @@ tasks:
         AWS_S3_SECRET_ACCESS_KEY=$(tofu -chdir=../terraform/{{ '{{.ENV}}' }} output -raw cnpg_user_secret_key) \
         DJANGO_SECRET_KEY=$(LC_CTYPE=C tr -dc A-Za-z0-9 </dev/urandom | head -c 32; echo) \
         ENVIRONMENT={{ '{{.ENV}}' }} \
-        envsubst < ../k8s/templates/secrets.yaml.template | kubeseal -n {{ copier__project_slug }}-{{ '{{.ENV}}' }} --format yaml > ../k8s/{{ '{{.ENV}}' }}/secrets.yaml
+        envsubst < ../k8s/templates/secrets.yaml.template | kubeseal -n {{ copier__rfc1123_subdomain }}-{{ '{{.ENV}}' }} --format yaml > ../k8s/{{ '{{.ENV}}' }}/secrets.yaml
 
   commit_sealed_secrets:
     desc: Commit and push the sealed secrets

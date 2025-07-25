@@ -39,6 +39,12 @@ copier__project_dash:
   help: "The project name in dash-separated format."
   when: false
 
+copier__rfc1123_subdomain:
+  type: str
+  default: "{{ copier__project_slug.lower().replace('_', '-') | regex_replace('[^a-z0-9-]', '') }}"
+  help: "A RFC 1123 compliant version of the project slug."
+  when: false
+
 copier__description:
   type: str
   default: "Behold My Awesome Project!"
