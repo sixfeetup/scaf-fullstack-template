@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.7.0](https://github.com/sixfeetup/scaf-fullstack-template/compare/v1.6.1...v1.7.0) (2025-07-25)
+
+### Features
+
+* automate commits and fix k8s namespace ([#125](https://github.com/sixfeetup/scaf-fullstack-template/issues/125)) ([676cf5f](https://github.com/sixfeetup/scaf-fullstack-template/commit/676cf5f550b19a9ef408842d127c2b2465d13ccd))
+
 ## [1.6.1](https://github.com/sixfeetup/scaf-fullstack-template/compare/v1.6.0...v1.6.1) (2025-07-25)
 
 ### Bug Fixes
