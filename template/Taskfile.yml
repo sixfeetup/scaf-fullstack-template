@@ -22,11 +22,16 @@ vars:
   TERRAFORM_STATE_BUCKET: "{{.PROJECT_SLUG}}-terraform-state"
   ARGOCD_VERSION: "{{.ARGOCD_VERSION}}"
   TERRAFORM_AUTO_APPROVE: "{{.TERRAFORM_AUTO_APPROVE}}"
-  BLUE: '\033[0;36m'
-  GREEN: '\033[0;32m'
-  YELLOW: '\033[0;33m'
-  RED: '\033[0;31m'
-  END: '\033[0m'
+  BLUE:
+    sh: echo "\033[0;36m"
+  GREEN:
+    sh: echo "\033[0;32m"
+  YELLOW:
+    sh: echo "\033[0;33m"
+  RED:
+    sh: echo "\033[0;31m"
+  END:
+    sh: echo "\033[0m"
 
 tasks:
   set-github-variables:
