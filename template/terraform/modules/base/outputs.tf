@@ -55,10 +55,10 @@ output "cloudfront_domain_name" {
 {% if copier__create_nextjs_frontend %}
 output "frontend_ecr_repo" {
   description = "The Frontend ECR repository"
-  value       = module.ecr_frontend.repository_name
+  value       = module.ecr_frontend.repository_url
 }
 {% endif %}
 output "backend_ecr_repo" {
   description = "The Backend ECR repository"
-  value       = module.ecr_backend.repository_name
+  value       = module.ecr_backend.repository_url
 }
