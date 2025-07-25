@@ -143,10 +143,14 @@ tasks:
       KUBECONFIG: "{{ '{{.ENV}}' }}/kubeconfig"
     cmds:
       - |
-        echo "Waiting for sealed-secrets-controller to be ready..."
+        echo "Waiting for sealed-secrets-controller pod to be created..."
+        until kubectl get pod -n kube-system -l app.kubernetes.io/name=sealed-secrets -o jsonpath='{.items[0].metadata.name}' >/dev/null 2>&1; do
+          sleep 5
+        done
+        echo "Pod created. Waiting for it to be ready..."
         kubectl wait --for=condition=ready pod -n kube-system -l app.kubernetes.io/name=sealed-secrets --timeout=120s
         echo "Waiting for sealed-secrets-controller service to be available..."
-        until kubectl get endpoints -n kube-system sealed-secrets-controller -o jsonpath='{.subsets[?(@.addresses)].addresses[0].ip}' 2>/dev/null; do
+        until kubectl get endpoints -n kube-system sealed-secrets-controller -o jsonpath='{.subsets[?(@.addresses)].addresses[0].ip}' >/dev/null 2>&1; do
           sleep 5
         done
         echo "sealed-secrets-controller is ready."
