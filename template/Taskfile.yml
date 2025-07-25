@@ -145,10 +145,17 @@ tasks:
     cmds:
       - |
         set -e
-        REPOS=$(tofu -chdir=./terraform/{{.ENV}} output -json | jq -r 'to_entries[] | select(.key | endswith("_ecr_repo")) | .value.value | select(. != null)')
-        for REPO in $REPOS; do
-          echo "Deleting images from $REPO..."
-          aws ecr batch-delete-image --repository-name $REPO --image-ids "$(aws ecr list-images --repository-name $REPO --query 'imageIds[*]' --output json)" --no-dry-run || true
+        REPO_URLS=$(tofu -chdir=./terraform/{{.ENV}} output -json | jq -r 'to_entries[] | select(.key | endswith("_ecr_repo")) | .value.value | select(. != null)')
+        for REPO_URL in $REPO_URLS; do
+          REPO_NAME=$(basename "$REPO_URL")
+          echo "Checking repository: $REPO_NAME"
+          IMAGE_IDS=$(aws ecr list-images --repository-name "$REPO_NAME" --query 'imageIds[*]' --output json)
+          if [ -n "$IMAGE_IDS" ] && [ "$IMAGE_IDS" != "[]" ]; then
+            echo "Deleting images from $REPO_NAME..."
+            aws ecr batch-delete-image --repository-name "$REPO_NAME" --image-ids "$IMAGE_IDS" >/dev/null
+          else
+            echo "No images to delete in $REPO_NAME."
+          fi
         done
 
   commit-changes:
