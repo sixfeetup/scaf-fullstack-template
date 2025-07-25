@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: {{ copier__project_slug }}-prod
+  name: {{ copier__rfc1123_subdomain }}-prod
   namespace: argocd
 spec:
   project: default
@@ -11,7 +11,7 @@ spec:
     path: k8s/prod
   destination:
     server: https://kubernetes.default.svc
-    namespace: {{ copier__project_slug }}-prod
+    namespace: {{ copier__rfc1123_subdomain }}-prod
   syncPolicy:
     automated:
       prune: true
