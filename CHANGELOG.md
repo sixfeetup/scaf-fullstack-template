@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.6.1](https://github.com/sixfeetup/scaf-fullstack-template/compare/v1.6.0...v1.6.1) (2025-07-25)
+
+### Bug Fixes
+
+* fix template placeholder syntax in party_popper function ([#126](https://github.com/sixfeetup/scaf-fullstack-template/issues/126)) ([ad4a1d3](https://github.com/sixfeetup/scaf-fullstack-template/commit/ad4a1d3d7cd3e776f8f8c8544ee00e4f8fb7bfcb))
+
 ## [1.6.0](https://github.com/sixfeetup/scaf-fullstack-template/compare/v1.5.1...v1.6.0) (2025-07-24)
 
 ### Features
