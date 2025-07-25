@@ -227,10 +227,10 @@ def party_popper():
         print("\r💥 POP! 🎉", end="", flush=True)
         subprocess.run(["sleep", "0.3"])
 
-    print("\r🎊 Congrats! Your { copier__project_slug } project is ready! 🎉")
+    print("\r🎊 Congrats! Your {{ copier__project_slug }} project is ready! 🎉")
     print()
     print("To get started, run:")
-    print("cd { copier__project_slug }")
+    print("cd {{ copier__project_slug }}")
     print("tilt up")
     print()
 
