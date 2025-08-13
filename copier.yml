@@ -107,7 +107,7 @@ copier__version:
 
 copier__timezone:
   type: str
-  default: "US/Eastern"
+  default: "America/New_York"
   help: "The default timezone for the project."
   validator: >-
     {% if not copier__timezone.strip() %}
