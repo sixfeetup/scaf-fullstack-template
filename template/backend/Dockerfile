@@ -1,5 +1,5 @@
 # Build all of the dependencies then we will build the actual application image
-FROM python:3-slim AS build
+FROM python:3.13-slim AS build
 
 ENV PYTHONUNBUFFERED=1
 ENV PYTHONDONTWRITEBYTECODE=1
@@ -15,14 +15,12 @@ RUN apt-get update \
     curl \
     gettext \
     gnupg \
-    && curl https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add - \
-    && echo "deb http://apt.postgresql.org/pub/repos/apt bookworm-pgdg main" > /etc/apt/sources.list.d/pgdg.list \
-    && apt-get update \
+    && mkdir -p /etc/apt/keyrings \
     && apt-get install --no-install-recommends -y \
     libffi-dev \
     libpq-dev \
     libssl-dev \
-    postgresql-client-16 \
+    postgresql-client \
     postgresql-client-common
 
 
@@ -56,7 +54,7 @@ RUN set -x \
     -r /tmp/requirements/tests.txt; fi
 
 # Now we can build the application image
-FROM python:3-slim
+FROM python:3.13-slim
 
 ENV PYTHONUNBUFFERED=1
 ENV PYTHONPATH="/app"
@@ -81,13 +79,11 @@ RUN apt-get update \
     ca-certificates \
     curl \
     gettext \
-    gnupg \
-    && curl https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add - \
-    && echo "deb http://apt.postgresql.org/pub/repos/apt bookworm-pgdg main" > /etc/apt/sources.list.d/pgdg.list \
-    && apt-get update \
-    && apt-get install --no-install-recommends -y \
     libpq5 \
-    $(if [ "$DEVEL" = "yes" ]; then echo 'bash postgresql-client-16'; fi) \
+    gnupg \
+    && mkdir -p /etc/apt/keyrings \
+    && apt-get install --no-install-recommends -y \
+    $(if [ "$DEVEL" = "yes" ]; then echo 'bash postgresql-client'; fi) \
     # awscli
     && apt-get install -y \
     awscli \

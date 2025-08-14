@@ -107,7 +107,7 @@ pipdeptree: ## Show the dependencies of installed packages as a tree structure
 	$(KUBECTL_EXEC_BACKEND) -c "uv pip tree --no-cache"
 
 compile: backend/requirements/base.in backend/requirements/tests.in ## compile latest requirements to be built into the docker image
-	@docker run --rm -v $(shell pwd)/backend/requirements:/local python:3.12-slim /bin/bash -c \
+	@docker run --rm -v $(shell pwd)/backend/requirements:/local python:3.13-slim /bin/bash -c \
 		"apt-get update; apt-get install -y libpq-dev; \
 		 pip install uv; \
 		 touch /local/base.txt; touch /local/production.txt; touch /local/tests.txt; touch /local/local.txt; \
