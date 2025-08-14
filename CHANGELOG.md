@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.7.2](https://github.com/sixfeetup/scaf-fullstack-template/compare/v1.7.1...v1.7.2) (2025-08-14)
+
+### Bug Fixes
+
+* update Dockerfile to run on Debian trixie ([#132](https://github.com/sixfeetup/scaf-fullstack-template/issues/132)) ([c43c973](https://github.com/sixfeetup/scaf-fullstack-template/commit/c43c973a4aa1344eee4c39ea2d1d7229ea077c48))
+
 ## [1.7.1](https://github.com/sixfeetup/scaf-fullstack-template/compare/v1.7.0...v1.7.1) (2025-07-25)
 
 ### Bug Fixes
