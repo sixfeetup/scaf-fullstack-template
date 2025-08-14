@@ -1,5 +1,5 @@
 # Build all of the dependencies then we will build the actual application image
-FROM python:3.13.6-slim-trixie AS build
+FROM python:3.13-slim AS build
 
 ENV PYTHONUNBUFFERED=1
 ENV PYTHONDONTWRITEBYTECODE=1
@@ -16,14 +16,11 @@ RUN apt-get update \
     gettext \
     gnupg \
     && mkdir -p /etc/apt/keyrings \
-    && curl -fsSL https://www.postgresql.org/media/keys/ACCC4CF8.asc -o /etc/apt/keyrings/postgresql.asc \
-    && echo "deb [signed-by=/etc/apt/keyrings/postgresql.asc] http://apt.postgresql.org/pub/repos/apt trixie-pgdg main" > /etc/apt/sources.list.d/pgdg.list \
-    && apt-get update \
     && apt-get install --no-install-recommends -y \
     libffi-dev \
     libpq-dev \
     libssl-dev \
-    postgresql-client-16 \
+    postgresql-client \
     postgresql-client-common
 
 
@@ -57,7 +54,7 @@ RUN set -x \
     -r /tmp/requirements/tests.txt; fi
 
 # Now we can build the application image
-FROM python:3.13.6-slim-trixie
+FROM python:3.13-slim
 
 ENV PYTHONUNBUFFERED=1
 ENV PYTHONPATH="/app"
@@ -85,11 +82,8 @@ RUN apt-get update \
     libpq5 \
     gnupg \
     && mkdir -p /etc/apt/keyrings \
-    && curl -fsSL https://www.postgresql.org/media/keys/ACCC4CF8.asc -o /etc/apt/keyrings/postgresql.asc \
-    && echo "deb [signed-by=/etc/apt/keyrings/postgresql.asc] http://apt.postgresql.org/pub/repos/apt trixie-pgdg main" > /etc/apt/sources.list.d/pgdg.list \
-    && apt-get update \
     && apt-get install --no-install-recommends -y \
-    $(if [ "$DEVEL" = "yes" ]; then echo 'bash postgresql-client-16'; fi) \
+    $(if [ "$DEVEL" = "yes" ]; then echo 'bash postgresql-client'; fi) \
     # awscli
     && apt-get install -y \
     awscli \
