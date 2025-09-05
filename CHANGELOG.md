@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.8.0](https://github.com/sixfeetup/scaf-fullstack-template/compare/v1.7.2...v1.8.0) (2025-09-05)
+
+### Features
+
+* add support for personal .envrc.local environment files ([#133](https://github.com/sixfeetup/scaf-fullstack-template/issues/133)) ([d21ca0b](https://github.com/sixfeetup/scaf-fullstack-template/commit/d21ca0b18a6dbb03274b2330ccbe775f706e174d))
+
 ## [1.7.2](https://github.com/sixfeetup/scaf-fullstack-template/compare/v1.7.1...v1.7.2) (2025-08-14)
 
 ### Bug Fixes
