@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.8.1](https://github.com/sixfeetup/scaf-fullstack-template/compare/v1.8.0...v1.8.1) (2025-09-08)
+
+### Bug Fixes
+
+* **ci:** github actions fail on old python and pre-commit versions ([#134](https://github.com/sixfeetup/scaf-fullstack-template/issues/134)) ([84dc274](https://github.com/sixfeetup/scaf-fullstack-template/commit/84dc274ab8ae3b60e14798cdfb64e874228ec38b))
+
 ## [1.8.0](https://github.com/sixfeetup/scaf-fullstack-template/compare/v1.7.2...v1.8.0) (2025-09-05)
 
 ### Features
