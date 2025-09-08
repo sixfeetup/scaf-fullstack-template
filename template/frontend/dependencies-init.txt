@@ -1,4 +1,4 @@
-@apollo/client
+@apollo/client@3.14
 @testing-library/jest-dom
 @testing-library/user-event
 @typescript-eslint/eslint-plugin
