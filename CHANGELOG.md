@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.9.0](https://github.com/sixfeetup/scaf-fullstack-template/compare/v1.8.1...v1.9.0) (2025-09-08)
+
+### Features
+
+* **flake:** bump nodejs verion to 22 ([#137](https://github.com/sixfeetup/scaf-fullstack-template/issues/137)) ([c796cda](https://github.com/sixfeetup/scaf-fullstack-template/commit/c796cdab2ad178544f6d2f452a5349c2c116a759))
+
 ## [1.8.1](https://github.com/sixfeetup/scaf-fullstack-template/compare/v1.8.0...v1.8.1) (2025-09-08)
 
 ### Bug Fixes
