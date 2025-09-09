@@ -37,6 +37,12 @@ jobs:
         run: |
           pip install copier black isort
 
+      - name: Configure Git
+        shell: bash
+        run: |
+          git config --global user.email "test@example.com"
+          git config --global user.name "Template Test"
+
       - name: Test Template
         shell: bash
         run: |
