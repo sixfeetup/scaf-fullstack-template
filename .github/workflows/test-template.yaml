@@ -64,3 +64,51 @@ jobs:
         run: |
           cd test-project
           make check-lint-and-test-frontend
+
+      - name: Notify Slack on Success
+        if: success()
+        uses: slackapi/slack-github-action@v2.1.1
+        with:
+          webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
+          webhook-type: incoming-webhook
+          payload: |
+            text: "Daily template test completed successfully! ✅"
+            blocks:
+              - type: "section"
+                text:
+                  type: "mrkdwn"
+                  text: "Daily template test completed successfully! ✅"
+              - type: "section"
+                fields:
+                  - type: "mrkdwn"
+                    text: "*Repository*: ${{ github.repository }}"
+                  - type: "mrkdwn"
+                    text: >
+                      *Run Details*: 
+                      <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View Logs>
+
+      - name: Notify Slack on Failure
+        if: failure()
+        uses: slackapi/slack-github-action@v2.1.1
+        with:
+          webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
+          webhook-type: incoming-webhook
+          payload: |
+            text: "Daily template test failed! ❌"
+            blocks:
+              - type: "section"
+                text:
+                  type: "mrkdwn"
+                  text: "Daily template test failed! ❌"
+              - type: "section"
+                text:
+                  type: "mrkdwn"
+                  text: "Please check the workflow logs for more information."
+              - type: "section"
+                fields:
+                  - type: "mrkdwn"
+                    text: "*Repository*: ${{ github.repository }}"
+                  - type: "mrkdwn"
+                    text: >
+                      *Run Details*: 
+                      <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View Logs>
