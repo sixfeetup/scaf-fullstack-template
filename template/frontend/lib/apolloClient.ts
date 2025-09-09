@@ -4,7 +4,6 @@ import { onError } from '@apollo/client/link/error'
 import merge from 'deepmerge'
 import isEqual from 'lodash/isEqual'
 import type { AppProps } from 'next/app'
-import { useRef } from 'react'
 
 export const APOLLO_STATE_PROP_NAME = '__APOLLO_STATE__'
 
@@ -79,7 +78,5 @@ export function addApolloState(client: typeof apolloClient, pageProps: AppProps[
 
 export function useApollo(pageProps: AppProps['pageProps']) {
   const state = pageProps[APOLLO_STATE_PROP_NAME]
-  const storeRef = useRef<ApolloClient<NormalizedCacheObject>>()
-  storeRef.current = initializeApollo(state)
-  return storeRef.current
+  return initializeApollo(state)
 }
