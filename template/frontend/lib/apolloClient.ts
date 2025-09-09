@@ -80,8 +80,6 @@ export function addApolloState(client: typeof apolloClient, pageProps: AppProps[
 export function useApollo(pageProps: AppProps['pageProps']) {
   const state = pageProps[APOLLO_STATE_PROP_NAME]
   const storeRef = useRef<ApolloClient<NormalizedCacheObject>>()
-  if (!storeRef.current) {
-    storeRef.current = initializeApollo(state)
-  }
+  storeRef.current = initializeApollo(state)
   return storeRef.current
 }
