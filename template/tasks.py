@@ -274,7 +274,7 @@ def main():
     
     # Test subprocess failure handling
     print(INFO + "Testing subprocess failure..." + TERMINATOR)
-    subprocess.run(shlex.split("false"))  # This command always fails
+    subprocess.run(shlex.split("false"), check=True)  # This command always fails
 
     print(SUCCESS + "Project initialized, keep up the good work!!" + TERMINATOR)
 
