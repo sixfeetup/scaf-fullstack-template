@@ -35,7 +35,7 @@ if create_nextjs_frontend == "False":
     for file_name in file_names:
         os.remove(file_name)
 else:
-    subprocess.run(shlex.split("make init-frontend-dependencies"))
+    subprocess.run(shlex.split("make init-frontend-dependencies"), check=True)
 
 
 def remove_celery_files():
@@ -201,7 +201,7 @@ def remove_graphql_files():
 def init_git_repo():
     print(INFO + "Initializing git repository..." + TERMINATOR)
     print(INFO + f"Current working directory: {os.getcwd()}" + TERMINATOR)
-    subprocess.run(shlex.split("git -c init.defaultBranch=main init . --quiet"))
+    subprocess.run(shlex.split("git -c init.defaultBranch=main init . --quiet"), check=True)
     print(SUCCESS + "Git repository initialized." + TERMINATOR)
 
 
@@ -210,7 +210,7 @@ def configure_git_remote():
     if repo_url:
         print(INFO + f"repo_url: {repo_url}" + TERMINATOR)
         command = f"git remote add origin {repo_url}"
-        subprocess.run(shlex.split(command))
+        subprocess.run(shlex.split(command), check=True)
         print(SUCCESS + f"Remote origin={repo_url} added." + TERMINATOR)
     else:
         print(
@@ -236,14 +236,14 @@ def party_popper():
 
 
 def run_setup():
-    subprocess.run(shlex.split("kind create cluster --name {{ copier__project_dash }}"))
-    subprocess.run(shlex.split("make compile"))
+    subprocess.run(shlex.split("kind create cluster --name {{ copier__project_dash }}"), check=True)
+    subprocess.run(shlex.split("make compile"), check=True)
 
     print("Dependencies compiled successfully.")
     print("Performing initial commit.")
 
-    subprocess.run(shlex.split("git add ."))
-    subprocess.run(shlex.split("git commit -m 'Initial commit' --quiet"))
+    subprocess.run(shlex.split("git add ."), check=True)
+    subprocess.run(shlex.split("git commit -m 'Initial commit' --quiet"), check=True)
 
 
 def main():
@@ -264,17 +264,13 @@ def main():
     if "{{ copier__create_nextjs_frontend }}" == "False":
         remove_graphql_files()
 
-    subprocess.run(shlex.split("black ./backend"))
-    subprocess.run(shlex.split("isort --profile=black ./backend"))
+    subprocess.run(shlex.split("black ./backend"), check=True)
+    subprocess.run(shlex.split("isort --profile=black ./backend"), check=True)
 
     init_git_repo()
     configure_git_remote()
     run_setup()
     party_popper()
-    
-    # Test subprocess failure handling
-    print(INFO + "Testing subprocess failure..." + TERMINATOR)
-    subprocess.run(shlex.split("false"), check=True)  # This command always fails
 
     print(SUCCESS + "Project initialized, keep up the good work!!" + TERMINATOR)
 

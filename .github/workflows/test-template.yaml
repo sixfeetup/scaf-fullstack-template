@@ -42,3 +42,15 @@ jobs:
           --defaults \
           --vcs-ref=$GITHUB_HEAD_REF \
           https://github.com/sixfeetup/scaf-fullstack-template.git test-project
+
+      - name: Run lint and formatting checks
+        shell: bash
+        run: |
+          cd test-project
+          make check-lint-and-formatting
+
+      - name: Run frontend lint and tests
+        shell: bash
+        run: |
+          cd test-project
+          make check-lint-and-test-frontend
