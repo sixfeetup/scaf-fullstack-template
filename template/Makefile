@@ -27,10 +27,10 @@ check-lint-and-formatting: .git/hooks/pre-commit ## Execute check of lint and fo
 
 {% if copier__create_nextjs_frontend %}
 check-lint-and-test-frontend:  ## Frontend Lint & Typecheck & Test
-	cd frontend/; \
-	npm install --legacy-peer-deps; \
-	npm run lint-src; \
-	npm run typecheck; \
+	cd frontend && \
+	npm install --legacy-peer-deps && \
+	npm run lint-src && \
+	npm run typecheck && \
 	npm run test
 {% endif %}
 
