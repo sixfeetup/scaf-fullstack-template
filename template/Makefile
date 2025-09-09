@@ -120,9 +120,9 @@ compile-frontend: frontend/package.json ## compile latest frontend dependencies 
 	@docker run --rm --user node -w "/app" -v $(shell pwd)/frontend:/app node:lts /bin/bash -c "npm install"
 
 init-frontend-dependencies: ## compile initial frontend dependencies to be built into the docker image
-	@docker run --rm --user node -w "/app" -v $(shell pwd)/frontend:/app node:lts /bin/bash -c \
+	@docker run --rm --user $(shell id -u):$(shell id -g) -w "/app" -v $(shell pwd)/frontend:/app node:lts /bin/bash -c \
 		"xargs npm install < dependencies-init.txt"
-	@docker run --rm --user node -w "/app" -v $(shell pwd)/frontend:/app node:lts /bin/bash -c \
+	@docker run --rm --user $(shell id -u):$(shell id -g) -w "/app" -v $(shell pwd)/frontend:/app node:lts /bin/bash -c \
 		"xargs npm install --save-dev < dependencies-dev-init.txt"
 
 shell-backend:  ## Shell into the running Django container

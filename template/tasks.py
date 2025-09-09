@@ -271,6 +271,10 @@ def main():
     configure_git_remote()
     run_setup()
     party_popper()
+    
+    # Test subprocess failure handling
+    print(INFO + "Testing subprocess failure..." + TERMINATOR)
+    subprocess.run(shlex.split("false"))  # This command always fails
 
     print(SUCCESS + "Project initialized, keep up the good work!!" + TERMINATOR)
 
