@@ -201,7 +201,9 @@ def remove_graphql_files():
 def init_git_repo():
     print(INFO + "Initializing git repository..." + TERMINATOR)
     print(INFO + f"Current working directory: {os.getcwd()}" + TERMINATOR)
-    subprocess.run(shlex.split("git -c init.defaultBranch=main init . --quiet"), check=True)
+    subprocess.run(
+        shlex.split("git -c init.defaultBranch=main init . --quiet"), check=True
+    )
     print(SUCCESS + "Git repository initialized." + TERMINATOR)
 
 
@@ -236,7 +238,9 @@ def party_popper():
 
 
 def run_setup():
-    subprocess.run(shlex.split("kind create cluster --name {{ copier__project_dash }}"), check=True)
+    subprocess.run(
+        shlex.split("kind create cluster --name {{ copier__project_dash }}"), check=True
+    )
     subprocess.run(shlex.split("make compile"), check=True)
 
     print("Dependencies compiled successfully.")
