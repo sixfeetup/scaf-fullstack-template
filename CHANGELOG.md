@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.10.0](https://github.com/sixfeetup/scaf-fullstack-template/compare/v1.9.0...v1.10.0) (2025-09-10)
+
+### Features
+
+* run full template test in CI without skipping tasks, daily and on pull request  ([#138](https://github.com/sixfeetup/scaf-fullstack-template/issues/138)) ([41b092a](https://github.com/sixfeetup/scaf-fullstack-template/commit/41b092a8eb9e8e183aacea32ccefd55c55cde16c))
+
 ## [1.9.0](https://github.com/sixfeetup/scaf-fullstack-template/compare/v1.8.1...v1.9.0) (2025-09-08)
 
 ### Features
