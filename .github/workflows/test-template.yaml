@@ -65,6 +65,19 @@ jobs:
           cd test-project
           make check-lint-and-test-frontend
 
+      - name: Install Tilt
+        shell: bash
+        run: |
+          curl -fsSL https://raw.githubusercontent.com/tilt-dev/tilt/master/scripts/install.sh | bash
+          tilt version
+
+      - name: Run Tilt CI
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd test-project
+          tilt ci
+
       - name: Notify Slack on Success
         if: success() && github.event_name == 'schedule'
         uses: slackapi/slack-github-action@v2.1.1
