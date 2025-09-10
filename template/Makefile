@@ -27,10 +27,10 @@ check-lint-and-formatting: .git/hooks/pre-commit ## Execute check of lint and fo
 
 {% if copier__create_nextjs_frontend %}
 check-lint-and-test-frontend:  ## Frontend Lint & Typecheck & Test
-	cd frontend/; \
-	npm install --legacy-peer-deps; \
-	npm run lint-src; \
-	npm run typecheck; \
+	cd frontend && \
+	npm install --legacy-peer-deps && \
+	npm run lint-src && \
+	npm run typecheck && \
 	npm run test
 {% endif %}
 
@@ -120,9 +120,9 @@ compile-frontend: frontend/package.json ## compile latest frontend dependencies 
 	@docker run --rm --user node -w "/app" -v $(shell pwd)/frontend:/app node:lts /bin/bash -c "npm install"
 
 init-frontend-dependencies: ## compile initial frontend dependencies to be built into the docker image
-	@docker run --rm --user node -w "/app" -v $(shell pwd)/frontend:/app node:lts /bin/bash -c \
+	@docker run --rm --user $(shell id -u):$(shell id -g) -w "/app" -v $(shell pwd)/frontend:/app -e npm_config_cache=/tmp/.npm node:lts /bin/bash -c \
 		"xargs npm install < dependencies-init.txt"
-	@docker run --rm --user node -w "/app" -v $(shell pwd)/frontend:/app node:lts /bin/bash -c \
+	@docker run --rm --user $(shell id -u):$(shell id -g) -w "/app" -v $(shell pwd)/frontend:/app -e npm_config_cache=/tmp/.npm node:lts /bin/bash -c \
 		"xargs npm install --save-dev < dependencies-dev-init.txt"
 
 shell-backend:  ## Shell into the running Django container

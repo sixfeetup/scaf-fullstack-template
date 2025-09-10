@@ -2,6 +2,10 @@ name: Test template
 
 on:
   pull_request:
+  schedule:
+    # Run daily at 2 AM UTC
+    - cron: '0 2 * * *'
+  workflow_dispatch: # Allow manual triggering
 
 jobs:
   test-template:
@@ -11,10 +15,33 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Install Copier
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 'lts/*'
+          cache: 'npm'
+          cache-dependency-path: 'template/frontend/package*.json'
+
+      - name: Install kind
         shell: bash
         run: |
-          pip install copier
+          curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.20.0/kind-linux-amd64
+          chmod +x ./kind
+          sudo mv ./kind /usr/local/bin/kind
+
+      - name: Install Python dependencies
+        shell: bash
+        run: |
+          pip install copier black isort
+
+      - name: Configure Git
+        shell: bash
+        run: |
+          git config --global user.email "test@example.com"
+          git config --global user.name "Template Test"
 
       - name: Test Template
         shell: bash
@@ -23,6 +50,65 @@ jobs:
           copier copy \
           --trust \
           --defaults \
-          --skip-tasks \
           --vcs-ref=$GITHUB_HEAD_REF \
           https://github.com/sixfeetup/scaf-fullstack-template.git test-project
+
+      - name: Run lint and formatting checks
+        shell: bash
+        run: |
+          cd test-project
+          make check-lint-and-formatting
+
+      - name: Run frontend lint and tests
+        shell: bash
+        run: |
+          cd test-project
+          make check-lint-and-test-frontend
+
+      - name: Notify Slack on Success
+        if: success() && github.event_name == 'schedule'
+        uses: slackapi/slack-github-action@v2.1.1
+        with:
+          webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
+          webhook-type: incoming-webhook
+          payload: |
+            text: "Daily template test completed successfully! ✅"
+            blocks:
+              - type: "section"
+                text:
+                  type: "mrkdwn"
+                  text: "Daily template test completed successfully! ✅"
+              - type: "section"
+                fields:
+                  - type: "mrkdwn"
+                    text: "*Repository*: ${{ github.repository }}"
+                  - type: "mrkdwn"
+                    text: >
+                      *Run Details*: 
+                      <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View Logs>
+
+      - name: Notify Slack on Failure
+        if: failure() && github.event_name == 'schedule'
+        uses: slackapi/slack-github-action@v2.1.1
+        with:
+          webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
+          webhook-type: incoming-webhook
+          payload: |
+            text: "Daily template test failed! ❌"
+            blocks:
+              - type: "section"
+                text:
+                  type: "mrkdwn"
+                  text: "Daily template test failed! ❌"
+              - type: "section"
+                text:
+                  type: "mrkdwn"
+                  text: "Please check the workflow logs for more information."
+              - type: "section"
+                fields:
+                  - type: "mrkdwn"
+                    text: "*Repository*: ${{ github.repository }}"
+                  - type: "mrkdwn"
+                    text: >
+                      *Run Details*: 
+                      <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View Logs>

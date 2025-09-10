@@ -6,9 +6,9 @@ const Footer = () => {
       <div className='container mx-auto px-4'>
         <div className='flex items-center justify-between'>
           <div>
-            <h3 className='text-lg font-bold'>{'{{ copier__project_name }}'}</h3>
+            <h3 className='text-lg font-bold'>{{ copier__project_name }}</h3>
             <p className='text-sm'>
-              &copy; {new Date().getFullYear()} {'{{ copier__project_name }}'}. All rights reserved.
+              &copy; {new Date().getFullYear()} {{ copier__project_name }}. All rights reserved.
             </p>
           </div>
           <div className='space-x-4'>
