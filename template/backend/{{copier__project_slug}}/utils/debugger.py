@@ -18,4 +18,7 @@ def pycharm_debugger():
 
 
 def vscode_debugger():
-    raise NotImplementedError("VSCode debugger not implemented")
+    logger.info("Debugpy connecting...")
+    import debugpy
+    host_ip = os.getenv("DOCKER_GATEWAY_IP")
+    debugpy.listen((host_ip, 5678))
