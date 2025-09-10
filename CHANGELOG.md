@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.10.0](https://github.com/sixfeetup/scaf-fullstack-template/compare/v1.9.0...v1.10.0) (2025-09-10)
+
+### Features
+
+* add "tilt ci" step to template test ([#139](https://github.com/sixfeetup/scaf-fullstack-template/issues/139)) ([61ab7d8](https://github.com/sixfeetup/scaf-fullstack-template/commit/61ab7d8c2a59afa086a6fe018405b75ddf35b0d5))
+* run full template test in CI without skipping tasks, daily and on pull request  ([#138](https://github.com/sixfeetup/scaf-fullstack-template/issues/138)) ([0afedfe](https://github.com/sixfeetup/scaf-fullstack-template/commit/0afedfe5890987c29bfb3f08c779f87665d1ca33))
+
 ## [1.9.0](https://github.com/sixfeetup/scaf-fullstack-template/compare/v1.8.1...v1.9.0) (2025-09-08)
 
 ### Features
