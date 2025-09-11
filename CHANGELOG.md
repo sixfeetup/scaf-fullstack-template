@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.10.1](https://github.com/sixfeetup/scaf-fullstack-template/compare/v1.10.0...v1.10.1) (2025-09-11)
+
+### Bug Fixes
+
+* VCS ref for test template workflow on main ([#141](https://github.com/sixfeetup/scaf-fullstack-template/issues/141)) ([62c7e8f](https://github.com/sixfeetup/scaf-fullstack-template/commit/62c7e8f61bafb4e25a12714dfc1ba9ed8952f0d5))
+
 ## [1.10.0](https://github.com/sixfeetup/scaf-fullstack-template/compare/v1.9.0...v1.10.0) (2025-09-10)
 
 ### Features
