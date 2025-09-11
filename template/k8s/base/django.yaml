@@ -11,6 +11,10 @@ spec:
   ports:
     - port: 8000
       targetPort: http-server
+      name: wsgi
+    - port: 5678
+      targetPort: 5678
+      name: debug
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -33,9 +37,12 @@ spec:
         - name: backend
           image: backend:latest
           command: ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+          # command: ["python", "-m", "debugpy", "--listen", "0.0.0.0:5678", "manage.py", "runserver", "0.0.0.0:8000"]
           ports:
             - name: http-server
               containerPort: 8000
+            - name: debug
+              containerPort: 5678
           envFrom:
             - configMapRef:
                 name: app-config

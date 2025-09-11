@@ -9,7 +9,9 @@ The steps below describe how to set up interactive debugging. Scaf supports
 
 ### Setup
 
-Update `k8s/base/app.configmap.yaml` with `data` field `PYTHONBREAKPOINT: "utils.pycharm_debugger"`
+Update `k8s/base/app.configmap.yaml` with:
+* `data` field `PYTHONBREAKPOINT: "utils.pycharm_debugger"`
+* `data` field `DEBUGGER_PORT: "6400"`
 
 In PyCharm:
 
@@ -38,7 +40,9 @@ You must then set break points in PyCharm, and call the code as usual to hit the
 
 ### Setup
 
-Update `k8s/base/app.configmap.yaml` with `data` field `PYTHONBREAKPOINT: "utils.vscode_debugger"`
+Update `k8s/base/app.configmap.yaml` with:
+* `data` field `PYTHONBREAKPOINT: "utils.vscode_debugger"`
+* `data` field `DEBUGGER_PORT: "5678"`
 
 In VS Code:
 
@@ -48,7 +52,9 @@ In VS Code:
 4. Choose 'Remote Attach'
 5. Set the host to `0.0.0.0`
 6. Set the port to `5678`
-7. VS Code will create a `.vscode/launch.json` with your configuration. Make any desired further changes, then save. The file should something look like:
+7. VS Code will create a `.vscode/launch.json` with your configuration.
+8. You'll need to update the `pathMappings` slightly. See the example below.
+9. Make any desired further changes, then save. The file should something look like:
 
 ```json
 {
@@ -57,7 +63,6 @@ In VS Code:
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
-
         {
             "name": "Python Debugger: Remote Attach",
             "type": "debugpy",
@@ -68,8 +73,8 @@ In VS Code:
             },
             "pathMappings": [
                 {
-                    "localRoot": "${workspaceFolder}",
-                    "remoteRoot": "."
+                    "localRoot": "${workspaceFolder}/backend",
+                    "remoteRoot": "/app/src"
                 }
             ]
         }
