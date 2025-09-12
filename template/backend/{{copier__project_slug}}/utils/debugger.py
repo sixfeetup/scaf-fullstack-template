@@ -21,6 +21,5 @@ def pycharm_debugger():
 def vscode_debugger():
     logger.info("Debugpy connecting...")
     import debugpy
-    host_ip = os.getenv("DOCKER_GATEWAY_IP")
     debug_port = int(os.getenv("DEBUGGER_PORT", default=5678))
-    debugpy.listen(("0.0.0.0", debug_port))
+    debugpy.listen(("0.0.0.0", debug_port))  # nosec B104

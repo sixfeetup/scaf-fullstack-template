@@ -5,6 +5,21 @@ The steps below describe how to set up interactive debugging. Scaf supports
 * PyCharm
 * VS Code
 
+## Starting Tilt with Debugging Support
+
+To enable debugging, start Tilt with the `--debugpy` flag:
+
+```bash
+tilt up -- --debugpy
+```
+
+This will:
+* Add the debug port (5678) to the backend service
+* Modify the Django container to use debugpy
+* Enable port forwarding for the debug port
+
+Without the `--debugpy` flag, Tilt will run normally without debugging support.
+
 ## PyCharm Debugging
 
 ### Setup
@@ -40,9 +55,7 @@ You must then set break points in PyCharm, and call the code as usual to hit the
 
 ### Setup
 
-Update `k8s/base/app.configmap.yaml` with:
-* `data` field `PYTHONBREAKPOINT: "utils.vscode_debugger"`
-* `data` field `DEBUGGER_PORT: "5678"`
+Make sure you have started Tilt with the `--debugpy` flag as described above.
 
 In VS Code:
 
