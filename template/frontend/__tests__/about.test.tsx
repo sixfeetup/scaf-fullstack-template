@@ -1,9 +1,9 @@
 import { expect, test } from 'vitest'
 
-import AboutPage from '../pages/about'
-
 import { GET_ME } from '@/pages'
 import { render, screen } from '@/utils/test-utils'
+
+import AboutPage from '../pages/about'
 
 const mocks = [
   {
