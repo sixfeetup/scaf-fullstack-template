@@ -1,6 +1,6 @@
-import { GET_ME } from '.'
-
 import { useQuery } from '@apollo/client'
+
+import { GET_ME } from '.'
 
 import { addApolloState, initializeApollo } from '@/lib/apolloClient'
 

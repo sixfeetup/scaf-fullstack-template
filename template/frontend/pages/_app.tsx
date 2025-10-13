@@ -2,6 +2,7 @@ import { ApolloProvider } from '@apollo/client'
 import type { AppProps } from 'next/app'
 
 import { useApollo } from '../lib/apolloClient'
+
 import ErrorBoundary from '@/components/ErrorBoundary'
 import Layout from '@/components/Layout'
 import '@/styles/globals.css'
