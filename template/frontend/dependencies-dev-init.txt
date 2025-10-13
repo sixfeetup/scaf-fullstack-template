@@ -1,3 +1,4 @@
+@eslint/eslintrc
 @graphql-codegen/cli
 @graphql-codegen/client-preset
 @graphql-typed-document-node/core
