@@ -23,4 +23,5 @@ prettier
 prettier-plugin-tailwindcss
 tailwindcss
 typescript
+typescript-eslint
 vitest

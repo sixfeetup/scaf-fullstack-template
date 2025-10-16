@@ -2,7 +2,7 @@ import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { FlatCompat } from '@eslint/eslintrc'
 import js from '@eslint/js'
-import tseslint from '@typescript-eslint/eslint-plugin'
+import tseslint from 'typescript-eslint'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -15,6 +15,7 @@ const compat = new FlatCompat({
 
 import globals from 'globals'
 export default [
+  ...tseslint.configs.recommended,
   // Ignores for build outputs and non-source files
   {
     ignores: [
@@ -22,9 +23,6 @@ export default [
       '.next/**',
       'out/**',
       'dist/**',
-      'vitest.config.ts',
-      'postcss.config.mjs',
-      'next.config.mjs',
       'eslint.config.mjs'
     ]
   },
@@ -35,7 +33,8 @@ export default [
       'plugin:jsx-a11y/recommended',
       'eslint:recommended',
       'plugin:react/recommended',
-      'plugin:react/jsx-runtime'
+      'plugin:react/jsx-runtime',
+      
     ],
     plugins: ['jsx-a11y', 'unused-imports', 'import'],
     settings: {
@@ -76,23 +75,47 @@ export default [
       ]
     }
   }),
+
   // TypeScript-specific settings and rules
   {
     files: ['**/*.ts', '**/*.tsx'],
     languageOptions: {
-      parser: (await import('@typescript-eslint/parser')).default,
+      parser: tseslint.parser,
       parserOptions: {
         project: ['./tsconfig.json'],
         tsconfigRootDir: __dirname
       }
     },
     plugins: {
-      '@typescript-eslint': tseslint
+      '@typescript-eslint': tseslint.plugin
     },
     rules: {
       '@typescript-eslint/no-unused-vars': 'off',
       '@typescript-eslint/no-unnecessary-condition': 'error',
       '@typescript-eslint/triple-slash-reference': 'off'
+    }
+  },
+  // Node overrides for common config files
+  {
+    files: [
+      '*.config.{js,mjs,ts}'
+    ],
+    languageOptions: {
+      globals: globals.node,
+      sourceType: 'module'
+    },
+    rules: {
+      'import/no-extraneous-dependencies': ['error', { devDependencies: true }]
+    }
+  },
+  {
+    files: ['*.config.cjs'],
+    languageOptions: {
+      globals: globals.node,
+      sourceType: 'commonjs'
+    },
+    rules: {
+      'import/no-extraneous-dependencies': ['error', { devDependencies: true }]
     }
   }
 ]
