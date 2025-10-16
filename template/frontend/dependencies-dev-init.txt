@@ -8,7 +8,6 @@
 @types/lodash
 @types/react
 @types/react-dom
-@typescript-eslint/parser
 @vitejs/plugin-react
 eslint
 eslint-config-next
