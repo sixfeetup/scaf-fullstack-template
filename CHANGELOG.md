@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.11.0](https://github.com/sixfeetup/scaf-fullstack-template/compare/v1.10.1...v1.11.0) (2025-10-16)
+
+### Features
+
+* migrate from `next lint` to `eslint` ([#144](https://github.com/sixfeetup/scaf-fullstack-template/issues/144)) ([50b2cc6](https://github.com/sixfeetup/scaf-fullstack-template/commit/50b2cc61b82684efc68d52218be7e44ef1767248))
+
 ## [1.10.1](https://github.com/sixfeetup/scaf-fullstack-template/compare/v1.10.0...v1.10.1) (2025-09-11)
 
 ### Bug Fixes
