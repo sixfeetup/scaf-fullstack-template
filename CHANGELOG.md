@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.11.1](https://github.com/sixfeetup/scaf-fullstack-template/compare/v1.11.0...v1.11.1) (2025-11-03)
+
+### Bug Fixes
+
+* eslint circular config error ([#145](https://github.com/sixfeetup/scaf-fullstack-template/issues/145)) ([2b400d3](https://github.com/sixfeetup/scaf-fullstack-template/commit/2b400d3e316b6b0e4dec27862ee1c6b7f480aaea))
+
 ## [1.11.0](https://github.com/sixfeetup/scaf-fullstack-template/compare/v1.10.1...v1.11.0) (2025-10-16)
 
 ### Features
