@@ -1,21 +1,18 @@
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { FlatCompat } from '@eslint/eslintrc'
-import js from '@eslint/js'
 import tseslint from 'typescript-eslint'
+import nextCoreWebVitals from 'eslint-config-next/core-web-vitals'
+import jsxA11y from 'eslint-plugin-jsx-a11y'
+import unusedImports from 'eslint-plugin-unused-imports'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
-const compat = new FlatCompat({
-  baseDirectory: __dirname,
-  recommendedConfig: js.configs.recommended,
-  allConfig: js.configs.all
-})
-
 import globals from 'globals'
 export default [
   ...tseslint.configs.recommended,
+  // Next.js recommended + core web vitals (flat)
+  ...nextCoreWebVitals,
   // Ignores for build outputs and non-source files
   {
     ignores: [
@@ -26,17 +23,11 @@ export default [
       'eslint.config.mjs'
     ]
   },
-  // Base (Next.js + React + a11y)
-  ...compat.config({
-    extends: [
-      'next/core-web-vitals',
-      'plugin:jsx-a11y/recommended',
-      'eslint:recommended',
-      'plugin:react/recommended',
-      'plugin:react/jsx-runtime',
-      
-    ],
-    plugins: ['jsx-a11y', 'unused-imports', 'import'],
+  // Project-specific rules and additional plugins
+  {
+    plugins: {
+      'unused-imports': unusedImports
+    },
     settings: {
       react: { version: 'detect' }
     },
@@ -74,7 +65,7 @@ export default [
         }
       ]
     }
-  }),
+  },
 
   // TypeScript-specific settings and rules
   {
