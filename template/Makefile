@@ -72,7 +72,7 @@ backend/requirements/production.txt: compile
 backend/requirements/tests.txt: compile
 
 setup:
-    cp -n .envrc.example .envrc; \
+	cp -n .envrc.example .envrc; \
 	@echo " $(YELLOW)⛭$(END) Checking if the setup is correct and all prerequisites are installed..."; \
 	@MISSING=""; \
 	for exec in $(PREREQUISITE_COMMANDS); do \
