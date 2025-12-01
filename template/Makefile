@@ -73,7 +73,7 @@ backend/requirements/tests.txt: compile
 
 setup:
     cp -n .envrc.example .envrc; \
-	@echo " $(YELLOW)⛭$(END) Checking if the setup is correct and all prerequisites are installed..."
+	@echo " $(YELLOW)⛭$(END) Checking if the setup is correct and all prerequisites are installed..."; \
 	@MISSING=""; \
 	for exec in $(PREREQUISITE_COMMANDS); do \
 		if ! which $$exec > /dev/null 2>&1; then \
