@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.11.2](https://github.com/sixfeetup/scaf-fullstack-template/compare/v1.11.1...v1.11.2) (2025-12-16)
+
+### Bug Fixes
+
+* no space left on device in github actions runner ([#148](https://github.com/sixfeetup/scaf-fullstack-template/issues/148)) ([f277011](https://github.com/sixfeetup/scaf-fullstack-template/commit/f277011eb67cb740b12de49be044a4f675c1e9b8))
+
 ## [1.11.1](https://github.com/sixfeetup/scaf-fullstack-template/compare/v1.11.0...v1.11.1) (2025-11-03)
 
 ### Bug Fixes
