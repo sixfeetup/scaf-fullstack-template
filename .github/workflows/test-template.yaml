@@ -15,6 +15,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      # Proposed as fix for "no space left on device":
+      # See https://github.com/actions/runner-images/issues/2875
+      - name: Free Disk Space (Ubuntu)
+        uses: jlumbroso/free-disk-space@main
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
