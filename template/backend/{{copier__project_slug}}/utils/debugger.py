@@ -7,6 +7,7 @@ logger = logging.getLogger(__name__)
 def pycharm_debugger():
     logger.info("Pycharm pydevd connecting...")
     import pydevd_pycharm
+
     host_ip = os.getenv("DOCKER_GATEWAY_IP")
     try:
         pydevd_pycharm.settrace(

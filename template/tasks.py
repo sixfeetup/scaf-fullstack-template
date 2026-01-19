@@ -268,6 +268,7 @@ def main():
     if "{{ copier__create_nextjs_frontend }}" == "False":
         remove_graphql_files()
 
+    # Format code using black and isort (versions should match .pre-commit-config.yaml)
     subprocess.run(shlex.split("black ./backend"), check=True)
     subprocess.run(shlex.split("isort --profile=black ./backend"), check=True)
 

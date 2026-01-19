@@ -38,8 +38,7 @@ class TestGraphQLView:
         Test that the `me` query returns the user information if authenticated.
         """
         with graphql_client.login(user):
-            res = graphql_client.query(
-                """
+            res = graphql_client.query("""
                 query Me {
                     me {
                         email
@@ -50,8 +49,7 @@ class TestGraphQLView:
                         username
                     }
                 }
-                """
-            )
+                """)
 
         assert res.errors is None
         assert res.data == {
@@ -69,8 +67,7 @@ class TestGraphQLView:
         """
         Test that the `update_user` mutation does not allow unauthenticated users.
         """
-        res = graphql_client.query(
-            """
+        res = graphql_client.query("""
             mutation MyMutation {
                 updateUser(input: {id: 1 name: "John Doe"}) {
                     ... on UserType {
@@ -80,8 +77,7 @@ class TestGraphQLView:
                     }
                 }
             }
-            """
-        )
+            """)
 
         assert res.errors is None
         assert res.data == {"updateUser": {}}
