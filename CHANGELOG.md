@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.11.3](https://github.com/sixfeetup/scaf-fullstack-template/compare/v1.11.2...v1.11.3) (2026-01-19)
+
+### Bug Fixes
+
+* update black to 26.1.0 and reformat code ([#150](https://github.com/sixfeetup/scaf-fullstack-template/issues/150)) ([caef22f](https://github.com/sixfeetup/scaf-fullstack-template/commit/caef22f687211343b4a7d65a123b3bc3a3b2b648))
+
 ## [1.11.2](https://github.com/sixfeetup/scaf-fullstack-template/compare/v1.11.1...v1.11.2) (2025-12-16)
 
 ### Bug Fixes
