@@ -104,7 +104,7 @@ jobs:
                     text: "*Repository*: ${{ github.repository }}"
                   - type: "mrkdwn"
                     text: >
-                      *Run Details*: 
+                      *Run Details*:
                       <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View Logs>
 
       - name: Notify Slack on Failure
@@ -130,5 +130,5 @@ jobs:
                     text: "*Repository*: ${{ github.repository }}"
                   - type: "mrkdwn"
                     text: >
-                      *Run Details*: 
+                      *Run Details*:
                       <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View Logs>
