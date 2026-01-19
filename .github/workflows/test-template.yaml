@@ -40,7 +40,7 @@ jobs:
       - name: Install Python dependencies
         shell: bash
         run: |
-          pip install copier black==26.1.0 isort==6.0.1
+          pip install copier black isort
 
       - name: Configure Git
         shell: bash
