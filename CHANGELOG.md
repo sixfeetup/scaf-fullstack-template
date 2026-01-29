@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.11.4](https://github.com/sixfeetup/scaf-fullstack-template/compare/v1.11.3...v1.11.4) (2026-01-29)
+
+### Bug Fixes
+
+* underscore not allowed in kind context name [#153](https://github.com/sixfeetup/scaf-fullstack-template/issues/153) ([#154](https://github.com/sixfeetup/scaf-fullstack-template/issues/154)) ([fb0c65d](https://github.com/sixfeetup/scaf-fullstack-template/commit/fb0c65d0413fe727e7c210e18e79752b2f2028e6))
+
 ## [1.11.3](https://github.com/sixfeetup/scaf-fullstack-template/compare/v1.11.2...v1.11.3) (2026-01-19)
 
 ### Bug Fixes
