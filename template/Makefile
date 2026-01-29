@@ -10,7 +10,7 @@ YELLOW:=$(shell echo "\033[0;33m")
 RED:=$(shell echo "\033[0;31m")
 END:=$(shell echo "\033[0m")
 
-PROJECT_SLUG:="{{ copier__project_slug }}"
+PROJECT_DASH:="{{ copier__project_dash }}"
 
 ## Release/Deployment Targets
 
@@ -86,18 +86,18 @@ setup:
 		echo " $(GREEN)✔️$(END) All prerequisites are installed."; \
 	fi
 	@CURRENT_CONTEXT="$$(kubectl config current-context 2>&1)"; \
-	if [ "$$CURRENT_CONTEXT" = "kind-$(PROJECT_SLUG)" ]; then \
-		echo " $(GREEN)✔️$(END) The kubectl context is correctly set to kind-$(PROJECT_SLUG). Run 'tilt up' to start your cluster!"; \
+	if [ "$$CURRENT_CONTEXT" = "kind-$(PROJECT_DASH)" ]; then \
+		echo " $(GREEN)✔️$(END) The kubectl context is correctly set to kind-$(PROJECT_DASH). Run 'tilt up' to start your cluster!"; \
 	else \
-		echo " $(YELLOW)⛭$(END) Current kubectl context is not 'kind-$(PROJECT_SLUG)'. Switching context now..."; \
-		if [ -z "$$(kubectl config get-contexts -o name | grep -w 'kind-$(PROJECT_SLUG)$$')" ]; then \
-			echo " $(YELLOW)⛭$(END) No context found for kind-$(PROJECT_SLUG). Creating one. Please wait, this may take a couple of minutes on a slower machine..."; \
-			kind create cluster --name $(PROJECT_SLUG) 1>/dev/null 2>/tmp/scaf_error.log; \
-			echo " $(GREEN)✔️$(END) kind-$(PROJECT_SLUG) cluster and context created."; \
+		echo " $(YELLOW)⛭$(END) Current kubectl context is not 'kind-$(PROJECT_DASH)'. Switching context now..."; \
+		if [ -z "$$(kubectl config get-contexts -o name | grep -w 'kind-$(PROJECT_DASH)$$')" ]; then \
+			echo " $(YELLOW)⛭$(END) No context found for kind-$(PROJECT_DASH). Creating one. Please wait, this may take a couple of minutes on a slower machine..."; \
+			kind create cluster --name $(PROJECT_DASH) 1>/dev/null 2>/tmp/scaf_error.log; \
+			echo " $(GREEN)✔️$(END) kind-$(PROJECT_DASH) cluster and context created."; \
 			echo " $(BLUE)🗣️ Remember, you can safely run \"make setup\" any time to switch between Scaf projects.$(END)"; \
 		fi; \
-		kubectl config use-context kind-$(PROJECT_SLUG) 1>/dev/null 2>/tmp/scaf_error.log; \
-		echo " $(GREEN)✔️$(END) Context switched to kind-$(PROJECT_SLUG). Run 'tilt up' to start your cluster! "; \
+		kubectl config use-context kind-$(PROJECT_DASH) 1>/dev/null 2>/tmp/scaf_error.log; \
+		echo " $(GREEN)✔️$(END) Context switched to kind-$(PROJECT_DASH). Run 'tilt up' to start your cluster! "; \
 	fi
 
 outdated: ## Show all the outdated packages with their latest versions in the container
